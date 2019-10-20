@@ -1,0 +1,22 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" build-on-make="true" name="TestTask5:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/TestTask5_war_exploded</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="TestTask5" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: org.springframework:spring-jdbc:5.2.0.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-beans:5.2.0.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-core:5.2.0.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-jcl:5.2.0.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-tx:5.2.0.RELEASE" />
+          <element id="library" level="project" name="Maven: org.hsqldb:hsqldb:2.5.0" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="TestTask5/web/Web" />
+      <element id="javaee-facet-resources" facet="TestTask5/web/Web2" />
+    </root>
+  </artifact>
+</component>
