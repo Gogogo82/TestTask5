@@ -1,6 +1,8 @@
-package app;
+package com.jcg.spring.jdbctemplate;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Product {
     private long id;
@@ -9,6 +11,8 @@ public class Product {
     private Date create_date;
     private long place_storage;
     private boolean reserved;
+    private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+
 
     public Product(long id, String name, String description, Date create_date, long place_storage, boolean reserved) {
         this.id = id;
@@ -19,7 +23,64 @@ public class Product {
         this.reserved = reserved;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Date getCreate_date() {
+        return create_date;
+    }
+
+    public String getCreate_dateAsString() {
+        return format.format(create_date);
+    }
+
+    public void setCreate_date(Date create_date) {
+        this.create_date = create_date;
+    }
+
+    public long getPlace_storage() {
+        return place_storage;
+    }
+
+    public void setPlace_storage(long place_storage) {
+        this.place_storage = place_storage;
+    }
+
+    public boolean isReserved() {
+        return reserved;
+    }
+
+    public void setReserved(boolean reserved) {
+        this.reserved = reserved;
+    }
+
     @Override
+    public String toString() {
+        return id + "\t" + name + "\t" + description + "\t" + format.format(create_date) + "\t" + place_storage + "\t" + reserved;
+    }
+
+        @Override
     public boolean equals(Object o) {
         if (o == null) return false;
         if (o == this) return true;
