@@ -14,7 +14,7 @@ import java.io.IOException;
 public class Update extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RequestDispatcher dispatcher = req.getRequestDispatcher("index.jsp");
+        RequestDispatcher dispatcher = req.getRequestDispatcher("index.html");
         req.setAttribute("table", ModelTMP.refresh());
         System.out.println("create");
         dispatcher.forward(req, resp);

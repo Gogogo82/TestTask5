@@ -1,13 +1,12 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>TestTask5</title>
-    <%@ page import="app.ModelTMP" %>
-    <%@ page contentType="text/html;charset=UTF-8" %>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
     <script src="/scripts/calendar/tcal.js"></script>
-    <%--    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.js"></script>--%>
+<!--    <%&#45;&#45;    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.js"></script>&#45;&#45;%>-->
     <link rel="stylesheet" type="text/css" href="/scripts/calendar/tcal.css"/>
 </head>
 
@@ -20,22 +19,22 @@
 
 <div id="mainTable">
 </div>
-<%--<table id="mainTable" border="1">--%>
-<%--    <tr>--%>
-<%--        <th>Идентификатор</th>--%>
-<%--        <th>Название</th>--%>
-<%--        <th>Описание</th>--%>
-<%--        <th>Добавлен в базу</th>--%>
-<%--        <th>Ячейка хранения</th>--%>
-<%--        <th>Зарезервирован</th>--%>
-<%--        <th>Изменить запись</th>--%>
-<%--    </tr>--%>
-<%--</table>--%>
+<!--<%&#45;&#45;<table id="mainTable" border="1">&#45;&#45;%>-->
+<!--    <%&#45;&#45;    <tr>&#45;&#45;%>-->
+<!--        <%&#45;&#45;        <th>Идентификатор</th>&#45;&#45;%>-->
+<!--        <%&#45;&#45;        <th>Название</th>&#45;&#45;%>-->
+<!--        <%&#45;&#45;        <th>Описание</th>&#45;&#45;%>-->
+<!--        <%&#45;&#45;        <th>Добавлен в базу</th>&#45;&#45;%>-->
+<!--        <%&#45;&#45;        <th>Ячейка хранения</th>&#45;&#45;%>-->
+<!--        <%&#45;&#45;        <th>Зарезервирован</th>&#45;&#45;%>-->
+<!--        <%&#45;&#45;        <th>Изменить запись</th>&#45;&#45;%>-->
+<!--        <%&#45;&#45;    </tr>&#45;&#45;%>-->
+<!--    <%&#45;&#45;</table>&#45;&#45;%>-->
 <p id="test">
-test
+    test
 </p>
 
-<%--<p><input type="button" value="Удалить" onclick="return Delete(this);"></p>--%>
+<!--<%&#45;&#45;<p><input type="button" value="Удалить" onclick="return Delete(this);"></p>&#45;&#45;%>-->
 
 <div id="CreateForm">
     <form action="/create" onsubmit="return validateForm()">
@@ -86,6 +85,8 @@ test
     //     return result;
     // }
 </script>
+<!--<button name="1" onclick='return Delete(this);'>Удалить</button>-->
+
 <script>
     var xmlHttp = new XMLHttpRequest();
 
@@ -116,22 +117,19 @@ test
                 document.getElementById("mainTable").innerHTML = tableContent;
             }
         };
-    };
+    }
 
     function Delete(Element) {
-        xmlHttp.open("GET", "/delete", true);
-        xmlHttp.send("id=" + Element.name);
+        xmlHttp.open("POST", "/delete", true);
+        xmlHttp.send(Element.name);
 
         xmlHttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 // if ((this.responseText) == "true"
-                //     app
-                document.getElementById("test").innerHTML = this.responseText;
                 Refresh();
             }
         };
     }
-
     //Управление формой товара
     function openForm() {
         document.getElementById("CreateForm").style.display = "block";

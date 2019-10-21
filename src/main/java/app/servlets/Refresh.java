@@ -24,7 +24,7 @@ import java.util.List;
 public class Refresh extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+//        RequestDispatcher dispatcher = request.getRequestDispatcher("index.html");
         List<Product> list = Model.getInstance().ReadAllProducts();
 //        for (Product p: list)
 //            System.out.println(p);
