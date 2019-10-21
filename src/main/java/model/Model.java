@@ -1,4 +1,4 @@
-package com.jcg.spring.jdbctemplate;
+package model;
 
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -74,7 +74,7 @@ public class Model {
                                 Long.parseLong(resultRow.getString("id")),
                                 resultRow.getString("name"),
                                 resultRow.getString("description"),
-                                format.parse(resultRow.getString("create_date")),
+                                format.parse(resultRow.getString("create_date")).getTime(),
                                 Long.parseLong(resultRow.getString("place_storage")),
                                 Boolean.parseBoolean(resultRow.getString("description"))
 

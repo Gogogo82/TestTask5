@@ -14,45 +14,45 @@
 <!--        <url-pattern>/</url-pattern>-->
 <!--    </servlet-mapping>-->
 
-    <servlet>
-        <servlet-name>refresh</servlet-name>
-        <servlet-class>app.servlets.Refresh</servlet-class>
-    </servlet>
+<!--    <servlet>-->
+<!--        <servlet-name>refresh</servlet-name>-->
+<!--        <servlet-class>app.servlets.Refresh</servlet-class>-->
+<!--    </servlet>-->
 
-    <servlet-mapping>
-        <servlet-name>refresh</servlet-name>
-        <url-pattern>/refresh</url-pattern>
-    </servlet-mapping>
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>refresh</servlet-name>-->
+<!--        <url-pattern>/refresh</url-pattern>-->
+<!--    </servlet-mapping>-->
 
 
-    <servlet>
-        <servlet-name>create</servlet-name>
-        <servlet-class>app.servlets.Create</servlet-class>
-    </servlet>
+<!--    <servlet>-->
+<!--        <servlet-name>create</servlet-name>-->
+<!--        <servlet-class>app.servlets.Create</servlet-class>-->
+<!--    </servlet>-->
 
-    <servlet-mapping>
-        <servlet-name>create</servlet-name>
-        <url-pattern>/</url-pattern>
-    </servlet-mapping>
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>create</servlet-name>-->
+<!--        <url-pattern>/</url-pattern>-->
+<!--    </servlet-mapping>-->
 
-    <servlet>
-        <servlet-name>update</servlet-name>
-        <servlet-class>app.servlets.Update</servlet-class>
-    </servlet>
+<!--    <servlet>-->
+<!--        <servlet-name>update</servlet-name>-->
+<!--        <servlet-class>app.servlets.Update</servlet-class>-->
+<!--    </servlet>-->
 
-    <servlet-mapping>
-        <servlet-name>update</servlet-name>
-        <url-pattern>/update</url-pattern>
-    </servlet-mapping>
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>update</servlet-name>-->
+<!--        <url-pattern>/update</url-pattern>-->
+<!--    </servlet-mapping>-->
 
-    <servlet>
-        <servlet-name>delete</servlet-name>
-        <servlet-class>app.servlets.Delete</servlet-class>
-    </servlet>
+<!--    <servlet>-->
+<!--        <servlet-name>delete</servlet-name>-->
+<!--        <servlet-class>app.servlets.Delete</servlet-class>-->
+<!--    </servlet>-->
 
-    <servlet-mapping>
-        <servlet-name>delete</servlet-name>
-        <url-pattern>/delete</url-pattern>
-    </servlet-mapping>
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>delete</servlet-name>-->
+<!--        <url-pattern>/delete</url-pattern>-->
+<!--    </servlet-mapping>-->
 
 </web-app>

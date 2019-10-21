@@ -4,49 +4,48 @@ package app.servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.jcg.spring.jdbctemplate.Model;
-import com.jcg.spring.jdbctemplate.Product;
+import model.Model;
+import model.Product;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+@WebServlet(name = "refresh", urlPatterns = {"/refresh"})
 public class Refresh extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RequestDispatcher dispatcher = req.getRequestDispatcher("index.jsp");
-
-        System.out.println("refresh");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//        RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
         List<Product> list = Model.getInstance().ReadAllProducts();
-        for (Product p: list)
-            System.out.println(p);
-
-        System.out.println("1");
+//        for (Product p: list)
+//            System.out.println(p);
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        System.out.println("2");
-        String jsonG = gson.toJson(new ArrayList<>());
-//        String jsonG = gson.toJson(new Product(2l, "f", "f", new Date(), 5l, true));
-        System.out.println("json: " + jsonG);
+        String jsonG = gson.toJson(list);
+//        System.out.println("json: " + jsonG);
 
 
-        ObjectMapper mapper = new ObjectMapper();
+//        ObjectMapper mapper = new ObjectMapper();
 //        String jsonJ = mapper.writeValueAsString(new Product(2l, "f", "f", new Date(), 5l, true));
-        String jsonJ = mapper.writeValueAsString("test");
-        System.out.println("jsonJ: " + jsonJ);
+//        String jsonJ = mapper.writeValueAsString("test");
+//        System.out.println("jsonJ: " + jsonJ);
+
+        response.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        out.print(jsonG);
 
 
-
-        req.setAttribute("table", jsonG);
-        dispatcher.forward(req, resp);
+//        request.setAttribute("table", jsonG);
+//        dispatcher.forward(request, response);
     }
 
 //    @Override

@@ -2,32 +2,28 @@ package app.servlets;
 
 
 import app.ModelTMP;
+import model.Model;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 
+@WebServlet(name = "delete", urlPatterns = {"/delete"})
 public class Delete extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RequestDispatcher dispatcher = req.getRequestDispatcher("index.jsp");
-        req.setAttribute("table", ModelTMP.refresh());
-        System.out.println("create");
-        dispatcher.forward(req, resp);
-    }
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println(request.getContextPath());
+        System.out.println(request.getParameter("id"));
+        long idForDelete = Long.parseLong(request.getParameter("id"));
+        boolean isDeleted = Model.getInstance().delete(idForDelete);
 
-//    @Override
-//    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        String name = req.getParameter("name");// "name" from jsp
-//        String password = req.getParameter("pass");// "pass" from jsp
-//        app.Product user = new app.Product(name, password);
-//        app.InitInit model = app.InitInit.getInstance();
-//        model.add(user);
-//
-//        req.setAttribute("userName", name);
-//        doGet(req, resp);
-//    }
+        response.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        out.print(isDeleted);
+    }
 }

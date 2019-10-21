@@ -1,24 +1,24 @@
-package com.jcg.spring.jdbctemplate;
+package model;
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class Product {
+public class Product implements Serializable {
     private long id;
     private String name;
     private String description;
-    private Date create_date;
+    private long create_date;
     private long place_storage;
     private boolean reserved;
-    private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+//    private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
     public Product() {
     }
 
-    public Product(long id, String name, String description, Date create_date, long place_storage, boolean reserved) {
+    public Product(long id, String name, String description, long create_date, long place_storage, boolean reserved) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -51,15 +51,17 @@ public class Product {
         this.description = description;
     }
 
-    public Date getCreate_date() {
+    public long getCreate_date() {
         return create_date;
     }
 
     public String getCreate_dateAsString() {
-        return format.format(create_date);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(create_date);
+        return calendar.get(Calendar.YEAR) + "-" + (calendar.MONTH + 1) + "-" + calendar.DAY_OF_MONTH;
     }
 
-    public void setCreate_date(Date create_date) {
+    public void setCreate_date(long create_date) {
         this.create_date = create_date;
     }
 
@@ -81,7 +83,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return id + "\t" + name + "\t" + description + "\t" + format.format(create_date) + "\t" + place_storage + "\t" + reserved;
+        return id + "\t" + name + "\t" + description + "\t" + getCreate_dateAsString() + "\t" + place_storage + "\t" + reserved;
     }
 
         @Override
@@ -96,7 +98,7 @@ public class Product {
         if (temp.id != id) return false;
         if (temp.name != null ? !temp.name.equals(name) : name != null) return false;
         if (temp.description != null ? !temp.description.equals(description) : description != null) return false;
-        if (temp.create_date != null ? !temp.create_date.equals(create_date) : create_date != null) return false;
+        if (temp.create_date != create_date) return false;
         if (temp.place_storage != place_storage) return false;
         if (temp.reserved != reserved) return false;
         return true;
@@ -109,7 +111,7 @@ public class Product {
         result = PRIME * result + (int)id;
         result = PRIME * result + ((name == null) ? 0 : name.hashCode());
         result = PRIME * result + ((description == null) ? 0 : description.hashCode());
-        result = PRIME * result + ((create_date == null) ? 0 : create_date.hashCode());
+        result = PRIME * result + (int)create_date;
         result = PRIME * result + (int)place_storage;
         result = PRIME * result + (reserved ? 0 : 1);
         return result;

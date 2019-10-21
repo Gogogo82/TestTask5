@@ -1,4 +1,4 @@
-package com.jcg.spring.jdbctemplate;
+package model;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -11,7 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
-
+/*
 public class DAOwithMainTMP {
 
     static JdbcTemplate jdbcTemplateObj;
@@ -87,4 +87,4 @@ public class DAOwithMainTMP {
 //        jdbcTemplateObj.update(sqlDeleteQuery, "Editor 104");
 //        } catch (DataAccessException exObj) {
 //        exObj.printStackTrace();
-//        }
+//        }*/
