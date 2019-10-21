@@ -2,7 +2,7 @@ package app;
 
 import java.sql.*;
 
-public class Model {
+public class ModelTMP {
 
     public static String refresh() {
         StringBuilder stringBuilder = new StringBuilder();

@@ -12,16 +12,24 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
-public class DAO {
+public class Model {
+    private static Model instance = new Model();
 
-    static JdbcTemplate jdbcTemplateObj;
-    static SimpleDriverDataSource dataSourceObj;
+    private static JdbcTemplate jdbcTemplateObj;
+    private static SimpleDriverDataSource dataSourceObj;
 
-    static String DB_USERNAME = "user";
-    static String DB_PASSWORD = "password";
-    static String DB_URL = "jdbc:hsqldb:C:/hsqldb-2.5.0/hsqldb/data/test5db;ifexists=true;shutdown=true";
+    private static String DB_USERNAME = "user";
+    private static String DB_PASSWORD = "password";
+    private static String DB_URL = "jdbc:hsqldb:C:/hsqldb-2.5.0/hsqldb/data/test5db;ifexists=true;shutdown=true";
 
-    public static SimpleDriverDataSource getDatabaseConnection() {
+    private Model() {
+    }
+
+    public static Model getInstance() {
+        return instance;
+    }
+
+    private static SimpleDriverDataSource getDatabaseConnection() {
         dataSourceObj = new SimpleDriverDataSource();
 
 //            try {
@@ -51,7 +59,7 @@ public class DAO {
         return result;
     }
 
-    public List<Product> Read() {
+    public List<Product> ReadAllProducts() {
         List<Product> result = null;
         try {
             jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
@@ -59,16 +67,16 @@ public class DAO {
             String sqlSelectQuery = "SELECT * FROM products";
 
             result = jdbcTemplateObj.query(sqlSelectQuery, new RowMapper() {
-                public Product mapRow(ResultSet result, int rowNum) throws SQLException {
+                public Product mapRow(ResultSet resultRow, int rowNum) throws SQLException {
                     Product product;
                     try {
                         product = new Product(
-                                Long.parseLong(result.getString("id")),
-                                result.getString("name"),
-                                result.getString("description"),
-                                format.parse(result.getString("create_date")),
-                                Long.parseLong(result.getString("place_storage")),
-                                Boolean.parseBoolean(result.getString("description"))
+                                Long.parseLong(resultRow.getString("id")),
+                                resultRow.getString("name"),
+                                resultRow.getString("description"),
+                                format.parse(resultRow.getString("create_date")),
+                                Long.parseLong(resultRow.getString("place_storage")),
+                                Boolean.parseBoolean(resultRow.getString("description"))
                         );
                     } catch (ParseException e) {
                         throw new SQLException(e.getMessage());
@@ -79,6 +87,19 @@ public class DAO {
 
         } catch (Exception e) {
             System.err.println("Read failed");
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public Product ReadProductByID (long id) {
+        Product result = null;
+        try {
+            jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
+            String sqlUpdateQuery = "SELECT * FROM products WHERE id=?";
+            jdbcTemplateObj.update(sqlUpdateQuery, id);
+        } catch (Exception e) {
+            System.err.println("User read failed");
             e.printStackTrace();
         }
         return result;
@@ -98,12 +119,12 @@ public class DAO {
         return result;
     }
 
-    public boolean delete(Product product) {
+    public boolean delete(long id) {
         boolean result = true;
         try {
             jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
             String sqlDeleteQuery = "DELETE FROM products where id=?";
-            jdbcTemplateObj.update(sqlDeleteQuery, product.getId());
+            jdbcTemplateObj.update(sqlDeleteQuery, id);
         } catch (Exception e) {
             System.err.println("Update failed");
             e.printStackTrace();

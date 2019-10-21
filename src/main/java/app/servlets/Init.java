@@ -1,5 +1,7 @@
 package app.servlets;
 
+import app.ModelTMP;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -12,7 +14,7 @@ public class Init extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         RequestDispatcher dispatcher = req.getRequestDispatcher("index.jsp");
-        req.setAttribute("table", app.Model.refresh());
+        req.setAttribute("table", ModelTMP.refresh());
         System.out.println("init");
         dispatcher.forward(req, resp);
     }
