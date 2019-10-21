@@ -7,6 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
     <script src="/scripts/calendar/tcal.js"></script>
 <!--    <%&#45;&#45;    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.js"></script>&#45;&#45;%>-->
+    <link rel="stylesheet" type="text/css" href="/styles.css"/>
     <link rel="stylesheet" type="text/css" href="/scripts/calendar/tcal.css"/>
 </head>
 
@@ -15,7 +16,7 @@
     <h1>Список товаров</h1>
 </div>
 
-<button onclick="openForm()">Добавить продукт</button>
+<button  class="open-button" onclick="openForm()">Добавить продукт</button>
 
 <div id="mainTable">
 </div>
@@ -36,9 +37,9 @@
 
 <!--<%&#45;&#45;<p><input type="button" value="Удалить" onclick="return Delete(this);"></p>&#45;&#45;%>-->
 
-<div id="CreateForm">
-    <form action="/create" onsubmit="return validateForm()">
-        <h1>Создание продукта</h1>
+<div id="CreateForm" class="form-popup">
+    <form action="/create"  class="form-container" onsubmit="return validateForm()">
+        <h1>Создать продукт</h1>
         <label for="name"><b>Название</b></label>
         <input type="text" id="name" maxlength="512" required>
         <br>
