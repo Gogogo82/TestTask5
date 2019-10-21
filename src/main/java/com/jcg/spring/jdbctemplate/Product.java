@@ -1,5 +1,7 @@
 package com.jcg.spring.jdbctemplate;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -13,6 +15,8 @@ public class Product {
     private boolean reserved;
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
+    public Product() {
+    }
 
     public Product(long id, String name, String description, Date create_date, long place_storage, boolean reserved) {
         this.id = id;

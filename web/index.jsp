@@ -7,14 +7,44 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
     <script src="/scripts/calendar/tcal.js"></script>
-<%--    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.js"></script>--%>
-    <link rel="stylesheet" type="text/css" href="/scripts/calendar/tcal.css" />
+    <%--    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.js"></script>--%>
+    <link rel="stylesheet" type="text/css" href="/scripts/calendar/tcal.css"/>
 </head>
 
 <body>
 <div>
     <h1>Список товаров</h1>
 </div>
+
+
+<%--<button id = "send">Старт</button>--%>
+<p id="testP">
+</p>
+
+<script>
+    var xmlHttp = new XMLHttpRequest();
+
+    //TODO: Создание объекта XMLHttpRequest для всех браузеров
+
+    function Refresh() {
+        xmlHttp.open("GET", "/refresh", true);
+        xmlHttp.send();
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var myObj = JSON.parse(this.responseText);
+                txt += "<table border='1'>"
+                for (x in myObj) {
+                    txt += "<tr><td>" + myObj[x].name + "</td></tr>";
+                }
+                txt += "</table>"
+                document.getElementById("testP").innerHTML = txt;
+            }
+        };
+    };
+
+    Refresh();
+</script>
+
 <button onclick="location.href='/create'">Добавить продукт</button>
 <table border="1">
     <tr>
@@ -26,18 +56,18 @@
         <th>Зарезервирован</th>
         <th>Изменить запись</th>
     </tr>
-    <%
-        // Table initialization
-//        String table = (String) request.getAttribute("table");
-        String table = ModelTMP.refresh();
-        if (/*table != null && */!table.equals("")) {
-            out.println(table);
-        } else out.println("<td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>");
-    %>
+
+    <%--    <%--%>
+    <%--        // Table initialization--%>
+    <%--//        String table = (String) request.getAttribute("table");--%>
+    <%--        String table = ModelTMP.refresh();--%>
+    <%--        if (/*table != null && */!table.equals("")) {--%>
+    <%--            out.println(table);--%>
+    <%--        } else out.println("<td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>");--%>
+    <%--    %>--%>
 </table>
 
 <script>
-    reqest.getAll();
     function Delete(Element) {
         var id = Element.id;
 
@@ -54,24 +84,25 @@
         xmlHttp.send(null);
 
     }
-// Маска даты
-    $(function(){
+
+    // Маска даты
+    $(function () {
         $('input#create_date').mask('99.99.9999');
 
     });
 
     // function validateForm() {
-        // var result;
-        // var date = document.forms["CreateForm"]["create_date"].value;
-        // var arrD = date.split(".");
-        // arrD[1] -= 1;
-        // var d = new Date(arrD[2], arrD[1], arrD[0]);
-        // if ((d.getFullYear() == arrD[2]) && (d.getMonth() == arrD[1]) && (d.getDate() == arrD[0])) {
-        //     result = true;
-        // } else {
-        //     alert("Введена некорректная дата");
-        //     result = false;
-        // }
+    // var result;
+    // var date = document.forms["CreateForm"]["create_date"].value;
+    // var arrD = date.split(".");
+    // arrD[1] -= 1;
+    // var d = new Date(arrD[2], arrD[1], arrD[0]);
+    // if ((d.getFullYear() == arrD[2]) && (d.getMonth() == arrD[1]) && (d.getDate() == arrD[0])) {
+    //     result = true;
+    // } else {
+    //     alert("Введена некорректная дата");
+    //     result = false;
+    // }
     //
     //     var i = document.forms["CreateForm"]['place_storage'].value;
     //     if (isFinite(i) && +i >=0) {
@@ -84,7 +115,7 @@
     //     return result;
     // }
 </script>
-<p> <input type="button" value="Удалить" onclick="return Delete(this);"> </p>
+<p><input type="button" value="Удалить" onclick="return Delete(this);"></p>
 
 <div name="CreateForm">
     <form action="/create" onsubmit="return validateForm()">
@@ -93,7 +124,7 @@
         <input type="text" id="name" maxlength="512" required>
         <br>
         <label for="description"><b>Описание</b></label>
-        <textarea  type="text" id="description" maxlength="1024" rows="3" cols="22" required></textarea>
+        <textarea type="text" id="description" maxlength="1024" rows="3" cols="22" required></textarea>
         <br>
         <label for="create_date"><b>Добавлен в базу</b></label>
         <input type="text" id="create_date" class="tcal" required>

@@ -15,6 +15,17 @@
 <!--    </servlet-mapping>-->
 
     <servlet>
+        <servlet-name>refresh</servlet-name>
+        <servlet-class>app.servlets.Refresh</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>refresh</servlet-name>
+        <url-pattern>/refresh</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
         <servlet-name>create</servlet-name>
         <servlet-class>app.servlets.Create</servlet-class>
     </servlet>

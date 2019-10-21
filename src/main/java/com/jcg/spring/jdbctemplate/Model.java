@@ -32,11 +32,11 @@ public class Model {
     private static SimpleDriverDataSource getDatabaseConnection() {
         dataSourceObj = new SimpleDriverDataSource();
 
-//            try {
-//                Class.forName("org.hsqldb.jdbc.JDBCDriver" );
-//            } catch (ClassNotFoundException e) {
-//                e.printStackTrace();
-//            }
+        try {
+            Class.forName("org.hsqldb.jdbc.JDBCDriver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
         dataSourceObj.setDriver(DriverManager.getDrivers().nextElement());
         dataSourceObj.setUrl(DB_URL);
@@ -77,10 +77,12 @@ public class Model {
                                 format.parse(resultRow.getString("create_date")),
                                 Long.parseLong(resultRow.getString("place_storage")),
                                 Boolean.parseBoolean(resultRow.getString("description"))
+
                         );
                     } catch (ParseException e) {
                         throw new SQLException(e.getMessage());
                     }
+//                    System.out.println("product: " + product);
                     return product;
                 }
             });
