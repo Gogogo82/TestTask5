@@ -5,10 +5,10 @@
     <title>TestTask5</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
-    <script src="/scripts/calendar/tcal.js"></script>
 <!--    <%&#45;&#45;    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.js"></script>&#45;&#45;%>-->
     <link rel="stylesheet" type="text/css" href="/styles.css"/>
-    <link rel="stylesheet" type="text/css" href="/scripts/calendar/tcal.css"/>
+<!--    <link rel="stylesheet" type="text/css" href="/scripts/calendar/tcal.css"/>-->
+<!--    <script src="scripts/calendar/tcal.js"></script>-->
 </head>
 
 <body>
@@ -20,51 +20,43 @@
 
 <div id="mainTable">
 </div>
-<!--<%&#45;&#45;<table id="mainTable" border="1">&#45;&#45;%>-->
-<!--    <%&#45;&#45;    <tr>&#45;&#45;%>-->
-<!--        <%&#45;&#45;        <th>Идентификатор</th>&#45;&#45;%>-->
-<!--        <%&#45;&#45;        <th>Название</th>&#45;&#45;%>-->
-<!--        <%&#45;&#45;        <th>Описание</th>&#45;&#45;%>-->
-<!--        <%&#45;&#45;        <th>Добавлен в базу</th>&#45;&#45;%>-->
-<!--        <%&#45;&#45;        <th>Ячейка хранения</th>&#45;&#45;%>-->
-<!--        <%&#45;&#45;        <th>Зарезервирован</th>&#45;&#45;%>-->
-<!--        <%&#45;&#45;        <th>Изменить запись</th>&#45;&#45;%>-->
-<!--        <%&#45;&#45;    </tr>&#45;&#45;%>-->
-<!--    <%&#45;&#45;</table>&#45;&#45;%>-->
+
 <p id="test">
     test
 </p>
 
-<!--<%&#45;&#45;<p><input type="button" value="Удалить" onclick="return Delete(this);"></p>&#45;&#45;%>-->
-
-<div id="CreateForm" class="form-popup">
-    <form action="/create"  class="form-container" onsubmit="return validateForm()">
-        <h1>Создать продукт</h1>
-        <label for="name"><b>Название</b></label>
-        <input type="text" id="name" maxlength="512" required>
+</form>
+<div id="createDIV" class="form-popup">
+    <form id="CreateForm" action="/create" method="post" class="form-container" onsubmit="validateForm()">
+        <h1 id="CreateFormHeader">Создать продукт</h1>
+        <label for="inputID"><b>Идентификатор</b></label>
+        <input type="text" id="inputID" name="id" readonly="readonly"></input>
         <br>
-        <label for="description"><b>Описание</b></label>
-        <textarea type="text" id="description" maxlength="1024" rows="3" cols="22" required></textarea>
+        <label for="inputName"><b>Название</b></label>
+        <input type="text" id="inputName" name="name" maxlength="512" required>
         <br>
-        <label for="create_date"><b>Добавлен в базу</b></label>
-        <input type="text" id="create_date" class="tcal" required>
+        <label for="inputDescription"><b>Описание</b></label>
+        <textarea type="text" id="inputDescription" name="description" maxlength="1024" rows="3" cols="22" required></textarea>
         <br>
-        <label for="place_storage"><b>Ячейка хранения</b></label>
-        <input type="text" id="place_storage" required>
+        <label for="inputCreate_date"><b>Добавлен в базу</b></label>
+        <input type="text" id="inputCreate_date" name="create_date" class="tcal" required>
         <br>
-        <label for="reserved"><b>Зарезервирован</b></label>
-        <input type="checkbox" id="reserved">
+        <label for="inputPlace_storage"><b>Ячейка хранения</b></label>
+        <input type="text" id="inputPlace_storage" name="place_storage" required>
         <br>
-        <button type="submit">Создать</button>
+        <label for="inputReserved"><b>Зарезервирован</b></label>
+        <input type="checkbox" id="inputReserved" name="reserved">
         <br>
-        <button type="button" onclick="closeForm()">Отмена</button>
+        <button type="submit" class="btn">ОК</button>
+        <br>
+        <button type="button" class="btn cancel" onclick="closeForm()">Отмена</button>
     </form>
 </div>
 <script>
 
     // function validateForm() {
     // var result;
-    // var date = document.forms["CreateForm"]["create_date"].value;
+    // var date = document.forms["createDIV"]["create_date"].value;
     // var arrD = date.split(".");
     // arrD[1] -= 1;
     // var d = new Date(arrD[2], arrD[1], arrD[0]);
@@ -75,7 +67,7 @@
     //     result = false;
     // }
     //
-    //     var i = document.forms["CreateForm"]['place_storage'].value;
+    //     var i = document.forms["createDIV"]['place_storage'].value;
     //     if (isFinite(i) && +i >=0) {
     //         // if (!isNaN(+i) && isFinite(i) && +i >=0) {
     //         result = true;
@@ -86,36 +78,71 @@
     //     return result;
     // }
 </script>
-<!--<button name="1" onclick='return Delete(this);'>Удалить</button>-->
 
 <script>
     var xmlHttp = new XMLHttpRequest();
 
     //TODO: Создание объекта XMLHttpRequest для всех браузеров
 
+    // function create(Element) {
+    //     xmlHttp.open("POST", "/create", true);
+    //     xmlHttp.send(Element.name);
+    //
+    //     xmlHttp.onreadystatechange = function () {
+    //         if (this.readyState == 4 && this.status == 200) {
+    //             // if ((this.responseText) == "true"
+    //             Refresh();
+    //         }
+    //     };
+    // }
+
     function Refresh() {
         xmlHttp.open("GET", "/refresh", true);
         xmlHttp.send();
         xmlHttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                var myObj = JSON.parse(this.responseText);
+                var serverRequest = JSON.parse(this.responseText);
                 var tableContent = "<table border=\"1\"><tr><th>Идентификатор</th><th>Название</th><th>Описание</th><th>Добавлен в базу</th><th>Ячейка хранения</th><th>Зарезервирован</th><th>Изменить запись</th></tr>"
                 // var tableContent = "";
-                for (var x in myObj) {
-                    var date = new Date(+(myObj[x].create_date));
+                for (var x in serverRequest) {
+                    var date = new Date(+(serverRequest[x].create_date));
                     tableContent += "<tr><td>" +
-                        myObj[x].id + "</td><td>" +
-                        myObj[x].name + "</td><td>" +
-                        myObj[x].description + "</td><td>" +
-                        date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDay() + "</td><td>" +
+                        serverRequest[x].id + "</td><td>" +
+                        serverRequest[x].name + "</td><td>" +
+                        serverRequest[x].description + "</td><td>" +
+                        date.getDay() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear() + "</td><td>" +
                         //TODO: day and month to MM-dd
-                        myObj[x].place_storage + "</td><td>" +
-                        myObj[x].reserved + "</td><td><button name=" +
-                        myObj[x].id + " onclick='return Update(this);'>Редактировать</button>&nbsp<button name=" +
-                        myObj[x].id + " onclick='return Delete(this);'>Удалить</button></td></tr>";
+                        serverRequest[x].place_storage + "</td><td>" +
+                        serverRequest[x].reserved + "</td><td><button name=" +
+                        serverRequest[x].id + " onclick='return Update(this);'>Редактировать</button>&nbsp<button name=" +
+                        serverRequest[x].id + " onclick='return Delete(this);'>Удалить</button></td></tr>";
                 }
                 tableContent += "</table>"
                 document.getElementById("mainTable").innerHTML = tableContent;
+            }
+        };
+    }
+
+    function Update(Element) {
+        xmlHttp.open("POST", "/update", true);
+        xmlHttp.send(Element.name + "\n");
+
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var serverRequest = JSON.parse(this.responseText);
+                var date = new Date(+(serverRequest.create_date));
+
+                document.getElementById("inputID").setAttribute("value", serverRequest.id);
+                document.getElementById("inputName").setAttribute("value", serverRequest.name);
+                document.getElementById("inputDescription").innerText = serverRequest.description;
+                document.getElementById("inputCreate_date").setAttribute("value", date.getDay() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear());
+                //TODO: day and month to MM-dd
+                document.getElementById("inputPlace_storage").setAttribute("value", serverRequest.place_storage);
+                document.getElementById("inputReserved").setAttribute("value", serverRequest.reserved);
+
+                document.getElementById("CreateForm").setAttribute("action", "/update");
+                document.getElementById("CreateFormHeader").innerText = "Изменить продукт";
+                openForm();
             }
         };
     }
@@ -131,18 +158,20 @@
             }
         };
     }
+
+
     //Управление формой товара
     function openForm() {
-        document.getElementById("CreateForm").style.display = "block";
+        document.getElementById("createDIV").style.display = "block";
     }
 
     function closeForm() {
-        document.getElementById("CreateForm").style.display = "none";
+        document.getElementById("createDIV").style.display = "none";
     }
 
     // Маска даты
     $(function () {
-        $('input#create_date').mask('99.99.9999');
+        $('input#inputCreate_date').mask('99-99-9999');
     });
 
     Refresh();

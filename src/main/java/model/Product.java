@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 public class Product implements Serializable {
@@ -56,9 +57,18 @@ public class Product implements Serializable {
     }
 
     public String getCreate_dateAsString() {
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar = new GregorianCalendar();
         calendar.setTimeInMillis(create_date);
-        return calendar.get(Calendar.YEAR) + "-" + (calendar.MONTH + 1) + "-" + calendar.DAY_OF_MONTH;
+
+        String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+        if (day.length() == 1)
+            day = "0" + day;
+
+        String month = String.valueOf(calendar.get(Calendar.MONTH) + 1);
+        if (month.length() == 1)
+            month = "0" + month;
+
+        return calendar.get(Calendar.YEAR) + "-" + month + "-" + day;
     }
 
     public void setCreate_date(long create_date) {

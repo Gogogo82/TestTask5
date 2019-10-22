@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -21,6 +22,8 @@ public class Model {
     private static String DB_USERNAME = "user";
     private static String DB_PASSWORD = "password";
     private static String DB_URL = "jdbc:hsqldb:C:/hsqldb-2.5.0/hsqldb/data/test5db;ifexists=true;shutdown=true";
+
+    private final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
     private Model() {
     }
@@ -45,7 +48,7 @@ public class Model {
         return dataSourceObj;
     }
 
-    public boolean Create(Product product) {
+    public boolean create(Product product) {
         boolean result = true;
         try {
             jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
@@ -59,11 +62,10 @@ public class Model {
         return result;
     }
 
-    public List<Product> ReadAllProducts() {
+    public List<Product> readAllProducts() {
         List<Product> result = null;
         try {
             jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
-            final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
             String sqlSelectQuery = "SELECT * FROM products";
 
             result = jdbcTemplateObj.query(sqlSelectQuery, new RowMapper() {
@@ -82,7 +84,6 @@ public class Model {
                     } catch (ParseException e) {
                         throw new SQLException(e.getMessage());
                     }
-//                    System.out.println("product: " + product);
                     return product;
                 }
             });
@@ -94,12 +95,34 @@ public class Model {
         return result;
     }
 
-    public Product ReadProductByID (long id) {
+    public Product readProductByID(long id) {
         Product result = null;
         try {
             jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
-            String sqlUpdateQuery = "SELECT * FROM products WHERE id=?";
-            jdbcTemplateObj.update(sqlUpdateQuery, id);
+            String sqlUpdateQuery = "SELECT * FROM products WHERE id=" + id;
+
+            List<Product> list = jdbcTemplateObj.query(sqlUpdateQuery, new RowMapper() {
+                public Product mapRow(ResultSet resultRow, int rowNum) throws SQLException {
+                    Product product;
+                    try {
+                        product = new Product(
+                                Long.parseLong(resultRow.getString("id")),
+                                resultRow.getString("name"),
+                                resultRow.getString("description"),
+                                format.parse(resultRow.getString("create_date")).getTime(),
+                                Long.parseLong(resultRow.getString("place_storage")),
+                                Boolean.parseBoolean(resultRow.getString("description"))
+
+                        );
+                    } catch (ParseException e) {
+                        throw new SQLException(e.getMessage());
+                    }
+                    return product;
+                }
+            });
+
+            result = list.get(0);
+
         } catch (Exception e) {
             System.err.println("User read failed");
             e.printStackTrace();
@@ -107,14 +130,14 @@ public class Model {
         return result;
     }
 
-    public boolean Update(Product product) {
+    public boolean update(Product product) {
         boolean result = true;
         try {
             jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
             String sqlUpdateQuery = "UPDATE products set name=?, description=?, create_date=?, place_storage=?, reserved=? WHERE id=?";
             jdbcTemplateObj.update(sqlUpdateQuery, product.getName(), product.getDescription(), product.getCreate_dateAsString(), product.getPlace_storage(), product.isReserved(), product.getId());
         } catch (Exception e) {
-            System.err.println("Update failed");
+            System.err.println("update failed");
             e.printStackTrace();
             result = false;
         }
@@ -128,7 +151,7 @@ public class Model {
             String sqlDeleteQuery = "DELETE FROM products where id=?";
             jdbcTemplateObj.update(sqlDeleteQuery, id);
         } catch (Exception e) {
-            System.err.println("Update failed");
+            System.err.println("update failed");
             e.printStackTrace();
             result = false;
         }
