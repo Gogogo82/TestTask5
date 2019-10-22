@@ -26,7 +26,7 @@
 <div id="createDIV" class="form-popup">
     <!--    <form id="CreateForm" action="/create" method="post" class="form-container" onsubmit="validateForm()">-->
     <form id="CreateForm" method="post" class="form-container" onsubmit="validateForm()">
-        <h1 id="CreateFormHeader">Создать продукт</h1>
+        <p id="CreateFormHeader"><b>Добавить продукт</b></p>
 
         <label for="inputID"><b>Идентификатор</b></label>
         <input type="text" id="inputID" name="id" readonly="readonly" autocomplete="off">
@@ -58,11 +58,11 @@
 
     //TODO: cross-browser XMLHttpRequest
 
-    function create(Element) {
+    function create() {
         var params = $("#CreateForm").serialize();
         $.ajax({
             type: "POST",
-            url: "/update",
+            url: "/create",
             data: params,
             success: function (data) {
                 // document.getElementById("test").innerText = "ajax";
@@ -199,9 +199,9 @@
         //         result = false;
         //     }
         //     return result;
-        if (document.getElementById("CreateFormHeader").innerText === "Изменить продукт")
+        if (document.getElementById("CreateFormHeader").innerText == "Изменить продукт")
             update();
-        else if (document.getElementById("CreateFormHeader").innerText === "Добавить продукт")
+        else if (document.getElementById("CreateFormHeader").innerText == "Добавить продукт")
             create();
     }
 

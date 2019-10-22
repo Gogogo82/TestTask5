@@ -24,7 +24,7 @@ public class Update extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String values = request.getReader().lines().collect(Collectors.joining());
         values = values.replaceAll("\\+", " ");
-        System.out.println("doPost values: "+ values);
+        System.out.println("Update: doPost values: "+ values);
 
         if (!values.contains("&")) {
             long id = Long.parseLong(values);

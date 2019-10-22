@@ -83,7 +83,7 @@ public class Model {
                                 Long.parseLong(resultRow.getString("place_storage")),
                                 Boolean.parseBoolean(resultRow.getString("reserved"))
                         );
-                        System.out.println("refresh from model: " + product);
+//                        System.out.println("refresh from model: " + product);
                     } catch (ParseException e) {
                         throw new SQLException(e.getMessage());
                     }
