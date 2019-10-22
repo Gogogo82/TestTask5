@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="windows-1251">
     <title>TestTask5</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
@@ -13,7 +13,7 @@
 
 <body>
 <div>
-    <h1>РЎРїРёСЃРѕРє С‚РѕРІР°СЂРѕРІ</h1>
+    <h1>Список товаров</h1>
 </div>
 
 
@@ -21,35 +21,34 @@
 
 <span id="test">test</span>
 
-<button class="open-button" onclick="openForm()">Р”РѕР±Р°РІРёС‚СЊ РїСЂРѕРґСѓРєС‚</button>
+<button class="open-button" onclick="openForm()">Добавить продукт</button>
 
 <div id="createDIV" class="form-popup">
-    <!--    <form id="CreateForm" action="/create" method="post" class="form-container" onsubmit="validateForm()">-->
-    <form id="CreateForm" method="post" class="form-container" onsubmit="validateForm()">
-        <p id="CreateFormHeader"><b>Р”РѕР±Р°РІРёС‚СЊ РїСЂРѕРґСѓРєС‚</b></p>
+    <form id="CreateForm" method="post" class="form-container" accept-charset="utf-8" onsubmit="validateForm()">
+        <p id="CreateFormHeader"><b>Добавить продукт</b></p>
 
-        <label for="inputID"><b>РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ</b></label>
+        <label for="inputID">Идентификатор</label>
         <input type="text" id="inputID" name="id" readonly="readonly" autocomplete="off">
         <br>
-        <label for="inputName"><b>РќР°Р·РІР°РЅРёРµ</b></label>
+        <label for="inputName">Название</label>
         <input type="text" id="inputName" name="name" maxlength="512" autocomplete="off" required>
         <br>
-        <label for="inputDescription"><b>РћРїРёСЃР°РЅРёРµ</b></label>
+        <label for="inputDescription">Описание</label>
         <textarea type="text" id="inputDescription" name="description" maxlength="1024" autocomplete="off"
                   required></textarea>
         <br>
-        <label for="inputCreate_date"><b>Р”РѕР±Р°РІР»РµРЅ РІ Р±Р°Р·Сѓ</b></label>
+        <label for="inputCreate_date">Добавлен в базу</label>
         <input type="text" id="inputCreate_date" name="create_date" class="tcal" autocomplete="off" required>
         <br>
-        <label for="inputPlace_storage"><b>РЇС‡РµР№РєР° С…СЂР°РЅРµРЅРёСЏ</b></label>
+        <label for="inputPlace_storage">Ячейка хранения</label>
         <input type="text" id="inputPlace_storage" name="place_storage" autocomplete="off" required>
         <br>
-        <label for="inputReserved"><b>Р—Р°СЂРµР·РµСЂРІРёСЂРѕРІР°РЅ</b></label>
+        <label for="inputReserved">Зарезервирован</label>
         <input type="checkbox" id="inputReserved" name="reserved">
         <br>
-        <button type="submit" class="btn">РћРљ</button>
+        <button type="submit" class="btn">ОК</button>
         <br>
-        <button type="button" class="btn cancel" onclick="closeForm()">РћС‚РјРµРЅР°</button>
+        <button type="button" class="btn cancel" onclick="closeForm()">Отмена</button>
     </form>
 </div>
 
@@ -64,21 +63,12 @@
             type: "POST",
             url: "/create",
             data: params,
-            success: function (data) {
-                // document.getElementById("test").innerText = "ajax";
+            success: function () {
+                document.getElementById("test").innerText = "ajax";
                 refresh();
                 //TODO
             }
         });
-    //     xmlHttp.open("POST", "/create", true);
-    //     xmlHttp.send(Element.name);
-    //
-    //     xmlHttp.onreadystatechange = function () {
-    //         if (this.readyState == 4 && this.status == 200) {
-    //             // if ((this.responseText) == "true"
-    //             refresh();
-    //         }
-    //     };
     }
 
     function refresh() {
@@ -87,10 +77,13 @@
         xmlHttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 var serverRequest = JSON.parse(this.responseText);
-                var tableContent = "<table border=\"1\"><tr><th>РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ</th><th>РќР°Р·РІР°РЅРёРµ</th><th>РћРїРёСЃР°РЅРёРµ</th><th>Р”РѕР±Р°РІР»РµРЅ РІ Р±Р°Р·Сѓ</th><th>РЇС‡РµР№РєР° С…СЂР°РЅРµРЅРёСЏ</th><th>Р—Р°СЂРµР·РµСЂРІРёСЂРѕРІР°РЅ</th><th>РР·РјРµРЅРёС‚СЊ Р·Р°РїРёСЃСЊ</th></tr>"
+                var tableContent = "<table border=\"1\"><tr><th>Идентификатор</th><th>Название</th><th>Описание</th><th>Добавлен в базу</th><th>Ячейка хранения</th><th>Зарезервирован</th><th>Изменить запись</th></tr>"
+                var isChecked = "";
 
                 for (var x in serverRequest) {
                     var date = new Date(+(serverRequest[x].create_date));
+                    if (serverRequest[x].reserved)
+                        isChecked = "Да";
 
                     tableContent += "<tr><td>" +
                         serverRequest[x].id + "</td><td>" +
@@ -99,9 +92,9 @@
                         date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear() + "</td><td>" +
                         //TODO: day and month to MM-dd
                         serverRequest[x].place_storage + "</td><td>" +
-                        serverRequest[x].reserved + "</td><td><button name=" +
-                        serverRequest[x].id + " onclick='return askProductData(this);'>Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ</button>&nbsp<button name=" +
-                        serverRequest[x].id + " onclick='return deleteProduct(this);'>РЈРґР°Р»РёС‚СЊ</button></td></tr>";
+                        isChecked + "</td><td><button name=" +
+                        serverRequest[x].id + " class=\"edit-delete-button\" onclick='return askProductData(this);'>Редактировать</button>&nbsp<button name=" +
+                        serverRequest[x].id + " class=\"edit-delete-button\" onclick='return deleteProduct(this);'>Удалить</button></td></tr>";
                 }
                 tableContent += "</table>"
                 document.getElementById("mainTable").innerHTML = tableContent;
@@ -124,10 +117,10 @@
                 document.getElementById("inputCreate_date").setAttribute("value", date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear());
                 //TODO: date to dd-mm-yyyy
                 document.getElementById("inputPlace_storage").setAttribute("value", serverRequest.place_storage);
-                document.getElementById("inputReserved").setAttribute("value", serverRequest.reserved);
+                if (serverRequest.reserved)
+                document.getElementById("inputReserved").setAttribute("checked", "");
 
-                // document.getElementById("CreateForm").setAttribute("action", "/update");
-                document.getElementById("CreateFormHeader").innerText = "РР·РјРµРЅРёС‚СЊ РїСЂРѕРґСѓРєС‚";
+                document.getElementById("CreateFormHeader").innerText = "Изменить продукт";
                 openForm();
             }
         };
@@ -137,10 +130,11 @@
         var params = $("#CreateForm").serialize();
         $.ajax({
             type: "POST",
+            dataType: "text",
             url: "/update",
             data: params,
-            success: function (data) {
-                // document.getElementById("test").innerText = "ajax";
+            success: function () {
+                document.getElementById("test").innerText = "ajax";
                 refresh();
                 //TODO
             }
@@ -159,7 +153,7 @@
         };
     }
 
-    //РЈРїСЂР°РІР»РµРЅРёРµ С„РѕСЂРјРѕР№ С‚РѕРІР°СЂР°
+    //Управление формой товара
     function openForm() {
         document.getElementById("createDIV").style.display = "block";
     }
@@ -174,7 +168,7 @@
         document.getElementById("inputPlace_storage").setAttribute("value", "");
         document.getElementById("inputReserved").setAttribute("value", "");
 
-        document.getElementById("CreateFormHeader").innerText = "Р”РѕР±Р°РІРёС‚СЊ РїСЂРѕРґСѓРєС‚";
+        document.getElementById("CreateFormHeader").innerText = "Добавить продукт";
     }
 
     function validateForm() {
@@ -186,7 +180,7 @@
         // if ((d.getFullYear() == arrD[2]) && (d.getMonth() == arrD[1]) && (d.getDate() == arrD[0])) {
         //     result = true;
         // } else {
-        //     alert("Р’РІРµРґРµРЅР° РЅРµРєРѕСЂСЂРµРєС‚РЅР°СЏ РґР°С‚Р°");
+        //     alert("Введена некорректная дата");
         //     result = false;
         // }
         //
@@ -195,17 +189,17 @@
         //         // if (!isNaN(+i) && isFinite(i) && +i >=0) {
         //         result = true;
         //     } else {
-        //         alert("Р’РІРµРґРµРЅ РЅРµРєРѕСЂСЂРµРєС‚РЅС‹Р№ РЅРѕРјРµСЂ СЏС‡РµР№РєРё С…СЂР°РЅРµРЅРёСЏ");
+        //         alert("Введен некорректный номер ячейки хранения");
         //         result = false;
         //     }
         //     return result;
-        if (document.getElementById("CreateFormHeader").innerText == "РР·РјРµРЅРёС‚СЊ РїСЂРѕРґСѓРєС‚")
+        if (document.getElementById("CreateFormHeader").innerText == "Изменить продукт")
             update();
-        else if (document.getElementById("CreateFormHeader").innerText == "Р”РѕР±Р°РІРёС‚СЊ РїСЂРѕРґСѓРєС‚")
+        else if (document.getElementById("CreateFormHeader").innerText == "Добавить продукт")
             create();
     }
 
-    // РњР°СЃРєР° РґР°С‚С‹
+    // Маска даты
     $(function () {
         $('input#inputCreate_date').mask('99-99-9999');
     });

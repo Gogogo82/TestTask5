@@ -22,8 +22,11 @@ import java.util.stream.Collectors;
 @WebServlet(name = "create", urlPatterns = {"/create"})
 public class Create extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String values = request.getReader().lines().collect(Collectors.joining());
+//        request.setCharacterEncoding("Cp1251");
+        String values = new String(request.getReader().lines().collect(Collectors.joining()).getBytes("ISO-8859-1"),"Cp1251");
+//        String values = request.getReader().lines().collect(Collectors.joining());
         values = values.replaceAll("\\+", " ");
+        System.out.println("Create: doPost values: " + values);
 
             Product product = new Product();
             product.setName(values.substring(values.indexOf("name") + 5, values.indexOf("description") - 1));
@@ -55,5 +58,6 @@ public class Create extends HttpServlet {
             response.setContentType("application/json;charset=UTF-8");
             PrintWriter out = response.getWriter();
             out.print(isUpdated);
+            System.out.println("Create.doPost: update successful");
         }
     }
