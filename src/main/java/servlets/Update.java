@@ -23,6 +23,7 @@ public class Update extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String values = request.getReader().lines().collect(Collectors.joining());
+        values = values.replaceAll("\\+", " ");
         System.out.println(values);
 
         if (!values.contains("&")) {
@@ -38,6 +39,7 @@ public class Update extends HttpServlet {
             out.print(jsonG);
         } else {
             Product product = new Product();
+            product.setId(Long.parseLong(values.substring(values.indexOf("id") + 3, values.indexOf("name") - 1)));
             product.setName(values.substring(values.indexOf("name") + 5, values.indexOf("description") - 1));
             product.setDescription(values.substring(values.indexOf("description") + 12, values.indexOf("create_date") - 1));
             String create_date = values.substring(values.indexOf("create_date") + 12, values.indexOf("place_storage") - 1);

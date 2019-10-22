@@ -21,11 +21,10 @@
 <div id="mainTable">
 </div>
 
-<p id="test">
+<span id="test">
     test
-</p>
+</span>
 
-</form>
 <div id="createDIV" class="form-popup">
     <form id="CreateForm" action="/create" method="post" class="form-container" onsubmit="validateForm()">
         <h1 id="CreateFormHeader">Создать продукт</h1>
@@ -106,11 +105,12 @@
                 // var tableContent = "";
                 for (var x in serverRequest) {
                     var date = new Date(+(serverRequest[x].create_date));
+
                     tableContent += "<tr><td>" +
                         serverRequest[x].id + "</td><td>" +
                         serverRequest[x].name + "</td><td>" +
                         serverRequest[x].description + "</td><td>" +
-                        date.getDay() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear() + "</td><td>" +
+                        date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear() + "</td><td>" +
                         //TODO: day and month to MM-dd
                         serverRequest[x].place_storage + "</td><td>" +
                         serverRequest[x].reserved + "</td><td><button name=" +
@@ -135,7 +135,7 @@
                 document.getElementById("inputID").setAttribute("value", serverRequest.id);
                 document.getElementById("inputName").setAttribute("value", serverRequest.name);
                 document.getElementById("inputDescription").innerText = serverRequest.description;
-                document.getElementById("inputCreate_date").setAttribute("value", date.getDay() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear());
+                document.getElementById("inputCreate_date").setAttribute("value", date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear());
                 //TODO: day and month to MM-dd
                 document.getElementById("inputPlace_storage").setAttribute("value", serverRequest.place_storage);
                 document.getElementById("inputReserved").setAttribute("value", serverRequest.reserved);

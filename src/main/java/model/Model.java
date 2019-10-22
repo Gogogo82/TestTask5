@@ -81,6 +81,7 @@ public class Model {
                                 Boolean.parseBoolean(resultRow.getString("description"))
 
                         );
+                        System.out.println("date from sql:" + format.parse(resultRow.getString("create_date")));
                     } catch (ParseException e) {
                         throw new SQLException(e.getMessage());
                     }
@@ -135,6 +136,7 @@ public class Model {
         try {
             jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
             String sqlUpdateQuery = "UPDATE products set name=?, description=?, create_date=?, place_storage=?, reserved=? WHERE id=?";
+            System.out.println("tosql: " + product.getCreate_dateAsString());
             jdbcTemplateObj.update(sqlUpdateQuery, product.getName(), product.getDescription(), product.getCreate_dateAsString(), product.getPlace_storage(), product.isReserved(), product.getId());
         } catch (Exception e) {
             System.err.println("update failed");
