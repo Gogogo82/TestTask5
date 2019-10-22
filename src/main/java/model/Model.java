@@ -32,26 +32,29 @@ public class Model {
         return instance;
     }
 
-    private static SimpleDriverDataSource getDatabaseConnection() {
-        dataSourceObj = new SimpleDriverDataSource();
+//    private static SimpleDriverDataSource getDatabaseConnection() {
+    static {
+    dataSourceObj = new SimpleDriverDataSource();
 
-        try {
-            Class.forName("org.hsqldb.jdbc.JDBCDriver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        dataSourceObj.setDriver(DriverManager.getDrivers().nextElement());
-        dataSourceObj.setUrl(DB_URL);
-        dataSourceObj.setUsername(DB_USERNAME);
-        dataSourceObj.setPassword(DB_PASSWORD);
-        return dataSourceObj;
+    try {
+        Class.forName("org.hsqldb.jdbc.JDBCDriver");
+    } catch (ClassNotFoundException e) {
+        e.printStackTrace();
     }
+
+    dataSourceObj.setDriver(DriverManager.getDrivers().nextElement());
+    dataSourceObj.setUrl(DB_URL);
+    dataSourceObj.setUsername(DB_USERNAME);
+    dataSourceObj.setPassword(DB_PASSWORD);
+    jdbcTemplateObj = new JdbcTemplate(dataSourceObj);//
+}
+//        return dataSourceObj;
+//    }
 
     public boolean create(Product product) {
         boolean result = true;
         try {
-            jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
+//            jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
             String sqlInsertQuery = "INSERT INTO products (name, description, create_date, place_storage, reserved) VALUES (?, ?, ?, ?, ?)";
             jdbcTemplateObj.update(sqlInsertQuery, product.getName(), product.getDescription(), product.getCreate_dateAsString(), product.getPlace_storage(), product.isReserved());
         } catch (Exception e) {
@@ -65,7 +68,7 @@ public class Model {
     public List<Product> readAllProducts() {
         List<Product> result = null;
         try {
-            jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
+//            jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
             String sqlSelectQuery = "SELECT * FROM products";
 
             result = jdbcTemplateObj.query(sqlSelectQuery, new RowMapper() {
@@ -78,10 +81,9 @@ public class Model {
                                 resultRow.getString("description"),
                                 format.parse(resultRow.getString("create_date")).getTime(),
                                 Long.parseLong(resultRow.getString("place_storage")),
-                                Boolean.parseBoolean(resultRow.getString("description"))
-
+                                Boolean.parseBoolean(resultRow.getString("reserved"))
                         );
-                        System.out.println("date from sql:" + format.parse(resultRow.getString("create_date")));
+                        System.out.println("refresh from model: " + product);
                     } catch (ParseException e) {
                         throw new SQLException(e.getMessage());
                     }
@@ -99,7 +101,7 @@ public class Model {
     public Product readProductByID(long id) {
         Product result = null;
         try {
-            jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
+//            jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
             String sqlUpdateQuery = "SELECT * FROM products WHERE id=" + id;
 
             List<Product> list = jdbcTemplateObj.query(sqlUpdateQuery, new RowMapper() {
@@ -112,8 +114,7 @@ public class Model {
                                 resultRow.getString("description"),
                                 format.parse(resultRow.getString("create_date")).getTime(),
                                 Long.parseLong(resultRow.getString("place_storage")),
-                                Boolean.parseBoolean(resultRow.getString("description"))
-
+                                Boolean.parseBoolean(resultRow.getString("reserved"))
                         );
                     } catch (ParseException e) {
                         throw new SQLException(e.getMessage());
@@ -134,7 +135,7 @@ public class Model {
     public boolean update(Product product) {
         boolean result = true;
         try {
-            jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
+//            jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
             String sqlUpdateQuery = "UPDATE products set name=?, description=?, create_date=?, place_storage=?, reserved=? WHERE id=?";
             System.out.println("tosql: " + product.getCreate_dateAsString());
             jdbcTemplateObj.update(sqlUpdateQuery, product.getName(), product.getDescription(), product.getCreate_dateAsString(), product.getPlace_storage(), product.isReserved(), product.getId());
@@ -149,7 +150,7 @@ public class Model {
     public boolean delete(long id) {
         boolean result = true;
         try {
-            jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
+//            jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
             String sqlDeleteQuery = "DELETE FROM products where id=?";
             jdbcTemplateObj.update(sqlDeleteQuery, id);
         } catch (Exception e) {

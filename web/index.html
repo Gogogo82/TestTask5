@@ -5,10 +5,10 @@
     <title>TestTask5</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
-<!--    <%&#45;&#45;    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.js"></script>&#45;&#45;%>-->
+    <!--    <%&#45;&#45;    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.js"></script>&#45;&#45;%>-->
     <link rel="stylesheet" type="text/css" href="/styles.css"/>
-<!--    <link rel="stylesheet" type="text/css" href="/scripts/calendar/tcal.css"/>-->
-<!--    <script src="scripts/calendar/tcal.js"></script>-->
+    <!--    <link rel="stylesheet" type="text/css" href="/scripts/calendar/tcal.css"/>-->
+    <!--    <script src="scripts/calendar/tcal.js"></script>-->
 </head>
 
 <body>
@@ -16,32 +16,33 @@
     <h1>Список товаров</h1>
 </div>
 
-<button  class="open-button" onclick="openForm()">Добавить продукт</button>
 
-<div id="mainTable">
-</div>
+<div id="mainTable"></div>
 
-<span id="test">
-    test
-</span>
+<span id="test">test</span>
+
+<button class="open-button" onclick="openForm()">Добавить продукт</button>
 
 <div id="createDIV" class="form-popup">
-    <form id="CreateForm" action="/create" method="post" class="form-container" onsubmit="validateForm()">
+    <!--    <form id="CreateForm" action="/create" method="post" class="form-container" onsubmit="validateForm()">-->
+    <form id="CreateForm" method="post" class="form-container" onsubmit="validateForm()">
         <h1 id="CreateFormHeader">Создать продукт</h1>
+
         <label for="inputID"><b>Идентификатор</b></label>
-        <input type="text" id="inputID" name="id" readonly="readonly"></input>
+        <input type="text" id="inputID" name="id" readonly="readonly" autocomplete="off">
         <br>
         <label for="inputName"><b>Название</b></label>
-        <input type="text" id="inputName" name="name" maxlength="512" required>
+        <input type="text" id="inputName" name="name" maxlength="512" autocomplete="off" required>
         <br>
         <label for="inputDescription"><b>Описание</b></label>
-        <textarea type="text" id="inputDescription" name="description" maxlength="1024" rows="3" cols="22" required></textarea>
+        <textarea type="text" id="inputDescription" name="description" maxlength="1024" autocomplete="off"
+                  required></textarea>
         <br>
         <label for="inputCreate_date"><b>Добавлен в базу</b></label>
-        <input type="text" id="inputCreate_date" name="create_date" class="tcal" required>
+        <input type="text" id="inputCreate_date" name="create_date" class="tcal" autocomplete="off" required>
         <br>
         <label for="inputPlace_storage"><b>Ячейка хранения</b></label>
-        <input type="text" id="inputPlace_storage" name="place_storage" required>
+        <input type="text" id="inputPlace_storage" name="place_storage" autocomplete="off" required>
         <br>
         <label for="inputReserved"><b>Зарезервирован</b></label>
         <input type="checkbox" id="inputReserved" name="reserved">
@@ -51,58 +52,43 @@
         <button type="button" class="btn cancel" onclick="closeForm()">Отмена</button>
     </form>
 </div>
-<script>
-
-    // function validateForm() {
-    // var result;
-    // var date = document.forms["createDIV"]["create_date"].value;
-    // var arrD = date.split(".");
-    // arrD[1] -= 1;
-    // var d = new Date(arrD[2], arrD[1], arrD[0]);
-    // if ((d.getFullYear() == arrD[2]) && (d.getMonth() == arrD[1]) && (d.getDate() == arrD[0])) {
-    //     result = true;
-    // } else {
-    //     alert("Введена некорректная дата");
-    //     result = false;
-    // }
-    //
-    //     var i = document.forms["createDIV"]['place_storage'].value;
-    //     if (isFinite(i) && +i >=0) {
-    //         // if (!isNaN(+i) && isFinite(i) && +i >=0) {
-    //         result = true;
-    //     } else {
-    //         alert("Введен некорректный номер ячейки хранения");
-    //         result = false;
-    //     }
-    //     return result;
-    // }
-</script>
 
 <script>
     var xmlHttp = new XMLHttpRequest();
 
-    //TODO: Создание объекта XMLHttpRequest для всех браузеров
+    //TODO: cross-browser XMLHttpRequest
 
-    // function create(Element) {
+    function create(Element) {
+        var params = $("#CreateForm").serialize();
+        $.ajax({
+            type: "POST",
+            url: "/update",
+            data: params,
+            success: function (data) {
+                // document.getElementById("test").innerText = "ajax";
+                refresh();
+                //TODO
+            }
+        });
     //     xmlHttp.open("POST", "/create", true);
     //     xmlHttp.send(Element.name);
     //
     //     xmlHttp.onreadystatechange = function () {
     //         if (this.readyState == 4 && this.status == 200) {
     //             // if ((this.responseText) == "true"
-    //             Refresh();
+    //             refresh();
     //         }
     //     };
-    // }
+    }
 
-    function Refresh() {
+    function refresh() {
         xmlHttp.open("GET", "/refresh", true);
         xmlHttp.send();
         xmlHttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 var serverRequest = JSON.parse(this.responseText);
                 var tableContent = "<table border=\"1\"><tr><th>Идентификатор</th><th>Название</th><th>Описание</th><th>Добавлен в базу</th><th>Ячейка хранения</th><th>Зарезервирован</th><th>Изменить запись</th></tr>"
-                // var tableContent = "";
+
                 for (var x in serverRequest) {
                     var date = new Date(+(serverRequest[x].create_date));
 
@@ -114,8 +100,8 @@
                         //TODO: day and month to MM-dd
                         serverRequest[x].place_storage + "</td><td>" +
                         serverRequest[x].reserved + "</td><td><button name=" +
-                        serverRequest[x].id + " onclick='return Update(this);'>Редактировать</button>&nbsp<button name=" +
-                        serverRequest[x].id + " onclick='return Delete(this);'>Удалить</button></td></tr>";
+                        serverRequest[x].id + " onclick='return askProductData(this);'>Редактировать</button>&nbsp<button name=" +
+                        serverRequest[x].id + " onclick='return deleteProduct(this);'>Удалить</button></td></tr>";
                 }
                 tableContent += "</table>"
                 document.getElementById("mainTable").innerHTML = tableContent;
@@ -123,7 +109,7 @@
         };
     }
 
-    function Update(Element) {
+    function askProductData(Element) {
         xmlHttp.open("POST", "/update", true);
         xmlHttp.send(Element.name + "\n");
 
@@ -136,29 +122,42 @@
                 document.getElementById("inputName").setAttribute("value", serverRequest.name);
                 document.getElementById("inputDescription").innerText = serverRequest.description;
                 document.getElementById("inputCreate_date").setAttribute("value", date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear());
-                //TODO: day and month to MM-dd
+                //TODO: date to dd-mm-yyyy
                 document.getElementById("inputPlace_storage").setAttribute("value", serverRequest.place_storage);
                 document.getElementById("inputReserved").setAttribute("value", serverRequest.reserved);
 
-                document.getElementById("CreateForm").setAttribute("action", "/update");
+                // document.getElementById("CreateForm").setAttribute("action", "/update");
                 document.getElementById("CreateFormHeader").innerText = "Изменить продукт";
                 openForm();
             }
         };
     }
 
-    function Delete(Element) {
+    function update() {
+        var params = $("#CreateForm").serialize();
+        $.ajax({
+            type: "POST",
+            url: "/update",
+            data: params,
+            success: function (data) {
+                // document.getElementById("test").innerText = "ajax";
+                refresh();
+                //TODO
+            }
+        });
+    }
+
+    function deleteProduct(Element) {
         xmlHttp.open("POST", "/delete", true);
         xmlHttp.send(Element.name);
 
         xmlHttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 // if ((this.responseText) == "true"
-                Refresh();
+                refresh();
             }
         };
     }
-
 
     //Управление формой товара
     function openForm() {
@@ -167,6 +166,43 @@
 
     function closeForm() {
         document.getElementById("createDIV").style.display = "none";
+
+        document.getElementById("inputID").setAttribute("value", "");
+        document.getElementById("inputName").setAttribute("value", "");
+        document.getElementById("inputDescription").innerText = "";
+        document.getElementById("inputCreate_date").setAttribute("value", "");
+        document.getElementById("inputPlace_storage").setAttribute("value", "");
+        document.getElementById("inputReserved").setAttribute("value", "");
+
+        document.getElementById("CreateFormHeader").innerText = "Добавить продукт";
+    }
+
+    function validateForm() {
+        // var result;
+        // var date = document.forms["createDIV"]["create_date"].value;
+        // var arrD = date.split(".");
+        // arrD[1] -= 1;
+        // var d = new Date(arrD[2], arrD[1], arrD[0]);
+        // if ((d.getFullYear() == arrD[2]) && (d.getMonth() == arrD[1]) && (d.getDate() == arrD[0])) {
+        //     result = true;
+        // } else {
+        //     alert("Введена некорректная дата");
+        //     result = false;
+        // }
+        //
+        //     var i = document.forms["createDIV"]['place_storage'].value;
+        //     if (isFinite(i) && +i >=0) {
+        //         // if (!isNaN(+i) && isFinite(i) && +i >=0) {
+        //         result = true;
+        //     } else {
+        //         alert("Введен некорректный номер ячейки хранения");
+        //         result = false;
+        //     }
+        //     return result;
+        if (document.getElementById("CreateFormHeader").innerText === "Изменить продукт")
+            update();
+        else if (document.getElementById("CreateFormHeader").innerText === "Добавить продукт")
+            create();
     }
 
     // Маска даты
@@ -174,7 +210,7 @@
         $('input#inputCreate_date').mask('99-99-9999');
     });
 
-    Refresh();
+    refresh();
 </script>
 </body>
 </html>
