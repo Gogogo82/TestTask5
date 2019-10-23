@@ -1,5 +1,11 @@
 package model;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,9 +25,13 @@ public class Model {
     private static JdbcTemplate jdbcTemplateObj;
     private static SimpleDriverDataSource dataSourceObj;
 
-    private static String DB_USERNAME = "user";
-    private static String DB_PASSWORD = "password";
-    private static String DB_URL = "jdbc:hsqldb:C:/hsqldb-2.5.0/hsqldb/data/test5db;ifexists=true;shutdown=true";
+//    private static String DB_USERNAME = "user";
+//    private static String DB_PASSWORD = "password";
+//    private static String DB_URL = "jdbc:hsqldb:C:/hsqldb-2.5.0/hsqldb/data/test5db;ifexists=true;shutdown=true";
+
+    private static String DB_USERNAME;
+    private static String DB_PASSWORD;
+    private static String DB_URL;
 
     private final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
@@ -32,29 +42,40 @@ public class Model {
         return instance;
     }
 
-//    private static SimpleDriverDataSource getDatabaseConnection() {
-    static {
-    dataSourceObj = new SimpleDriverDataSource();
+    private static SimpleDriverDataSource getDatabaseConnection() {
 
-    try {
-        Class.forName("org.hsqldb.jdbc.JDBCDriver");
-    } catch (ClassNotFoundException e) {
-        e.printStackTrace();
+        dataSourceObj = new SimpleDriverDataSource();
+
+        try {
+            String projectRoot = Model.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+            projectRoot = projectRoot.substring(0, projectRoot.lastIndexOf("TestTask5_war_exploded") + "TestTask5_war_exploded".length() + 1);
+            projectRoot = projectRoot.replaceAll("%20", " ");
+            String pathToParams = projectRoot + "DBparams.txt";
+            if (pathToParams.matches("/[a-zA-Z]:.*"))
+                pathToParams = pathToParams.replaceFirst("/", "");
+
+            String[] params = Files.lines(Paths.get(pathToParams)).toArray(String[]::new);
+            DB_USERNAME = params[0];
+            DB_PASSWORD = params[1];
+            DB_URL = "jdbc:hsqldb:" + params[2].replaceFirst(".script", "") + ";ifexists=true;shutdown=true";
+
+            Class.forName("org.hsqldb.jdbc.JDBCDriver");
+        } catch (ClassNotFoundException | IOException e) {
+            e.printStackTrace();
+        }
+
+        dataSourceObj.setDriver(DriverManager.getDrivers().nextElement());
+        dataSourceObj.setUrl(DB_URL);
+        dataSourceObj.setUsername(DB_USERNAME);
+        dataSourceObj.setPassword(DB_PASSWORD);
+
+        return dataSourceObj;
     }
-
-    dataSourceObj.setDriver(DriverManager.getDrivers().nextElement());
-    dataSourceObj.setUrl(DB_URL);
-    dataSourceObj.setUsername(DB_USERNAME);
-    dataSourceObj.setPassword(DB_PASSWORD);
-    jdbcTemplateObj = new JdbcTemplate(dataSourceObj);//
-}
-//        return dataSourceObj;
-//    }
 
     public boolean create(Product product) {
         boolean result = true;
         try {
-//            jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
+            jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
             String sqlInsertQuery = "INSERT INTO products (name, description, create_date, place_storage, reserved) VALUES (?, ?, ?, ?, ?)";
             jdbcTemplateObj.update(sqlInsertQuery, product.getName(), product.getDescription(), product.getCreate_dateAsString(), product.getPlace_storage(), product.isReserved());
         } catch (Exception e) {
@@ -68,7 +89,7 @@ public class Model {
     public List<Product> readAllProducts() {
         List<Product> result = null;
         try {
-//            jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
+            jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
             String sqlSelectQuery = "SELECT * FROM products";
 
             result = jdbcTemplateObj.query(sqlSelectQuery, new RowMapper() {
@@ -101,7 +122,7 @@ public class Model {
     public Product readProductByID(long id) {
         Product result = null;
         try {
-//            jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
+            jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
             String sqlUpdateQuery = "SELECT * FROM products WHERE id=" + id;
 
             List<Product> list = jdbcTemplateObj.query(sqlUpdateQuery, new RowMapper() {
@@ -135,7 +156,7 @@ public class Model {
     public boolean update(Product product) {
         boolean result = true;
         try {
-//            jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
+            jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
             String sqlUpdateQuery = "UPDATE products set name=?, description=?, create_date=?, place_storage=?, reserved=? WHERE id=?";
             System.out.println("tosql: " + product.getCreate_dateAsString());
             jdbcTemplateObj.update(sqlUpdateQuery, product.getName(), product.getDescription(), product.getCreate_dateAsString(), product.getPlace_storage(), product.isReserved(), product.getId());
@@ -150,7 +171,7 @@ public class Model {
     public boolean delete(long id) {
         boolean result = true;
         try {
-//            jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
+            jdbcTemplateObj = new JdbcTemplate(getDatabaseConnection());
             String sqlDeleteQuery = "DELETE FROM products where id=?";
             jdbcTemplateObj.update(sqlDeleteQuery, id);
         } catch (Exception e) {
