@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <title>TestTask5</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>-->
-    <!--    <%&#45;&#45;    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.js"></script>&#45;&#45;%>-->
     <link rel="stylesheet" type="text/css" href="/styles.css"/>
     <link rel="stylesheet" type="text/css" href="/scripts/calendar/tcal.css"/>
     <script src="scripts/calendar/tcal.js"></script>
@@ -20,13 +18,14 @@
 
 <div id="mainTable"></div>
 
-<span id="test">test</span>
+<!--<span id="test">test</span>-->
 
 <button class="open-button" onclick="openForm()">Добавить продукт</button>
 
 <div id="createDIV" class="form-popup">
-    <form id="CreateForm" method="post" class="form-container" onsubmit=createOrUpdate()>
+    <form id="CreateForm" method="post" action="" class="form-container">
         <!--accept-charset="utf-8"-->
+        <!--        onsubmit="createOrUpdate();"-->
         <p id="CreateFormHeader"><b>Добавить продукт</b></p>
 
         <label for="inputID">Идентификатор</label>
@@ -49,34 +48,50 @@
         <label for="inputReserved">Зарезервирован</label>
         <input type="checkbox" id="inputReserved" name="reserved">
         <br>
-        <button type="submit" class="btn">ОК</button>
+        <button type="submit" id="submitButton" class="btn">ОК</button>
         <br>
         <button type="button" class="btn cancel" onclick="closeForm()">Отмена</button>
     </form>
 </div>
 
+<div id="result_form"></div>
+
+<script>
+    $(document).ready(function () {
+        $("#submitButton").click(
+            function () {
+                var operationUrl = "/create";
+
+                if (document.getElementById("CreateFormHeader").innerText === "Изменить продукт")
+                    operationUrl = "/update";
+
+                $.ajax({
+                    url: operationUrl,
+                    type: "POST",
+                    dataType: "html",
+                    data: $("#CreateForm").serialize(),
+                    success: function (response) {
+                        result = $.parseJSON(response);
+                        $('#result_form').html('Данные отправлены успешно');
+                        refresh();
+                        closeForm();
+                    },
+                    error: function (response) {
+                        $('#result_form').html('Ошибка. Данные не отправлены.');
+                    }
+                });
+
+                return false;
+            }
+        );
+    });
+
+</script>
+
 <script>
     var xmlHttp = new XMLHttpRequest();
 
     //TODO: cross-browser XMLHttpRequest
-
-    function createOrUpdate() {
-        var operationUrl = "/create";
-
-        if (document.getElementById("CreateFormHeader").innerText === "Изменить продукт")
-            operationUrl = "/update";
-        
-        var params = $("#CreateForm").serialize();
-        $.ajax({
-            type: "POST",
-            url: operationUrl,
-            data: params
-            // success: function () {
-            // refresh();
-            // }
-        });
-
-    }
 
     function refresh() {
         xmlHttp.open("GET", "/refresh", true);
@@ -150,7 +165,7 @@
         xmlHttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 // if ((this.responseText) == "true"
-                // refresh();
+                refresh();
             }
         };
     }

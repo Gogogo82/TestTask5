@@ -179,10 +179,3 @@ public class Model {
         return result;
     }
 }
-//    The Jdbc Template methods throw runtime DataAccessException, so here is an example if developers want to catch this exception explicitly:
-//        try {
-//        String sqlDeleteQuery = "DELETE FROM contact where name=?";
-//        jdbcTemplateObj.update(sqlDeleteQuery, "Editor 104");
-//        } catch (DataAccessException exObj) {
-//        exObj.printStackTrace();
-//        }

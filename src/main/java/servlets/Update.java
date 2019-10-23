@@ -35,7 +35,7 @@ public class Update extends HttpServlet {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String jsonG = gson.toJson(productForUpdate);
 
-            response.setContentType("application/json;charset=UTF-8");
+            response.setContentType("application/json;charset=windows-1251");
             PrintWriter out = response.getWriter();
             out.print(jsonG);
         } else {
@@ -64,7 +64,7 @@ public class Update extends HttpServlet {
 
             System.out.println("Update.doPost: object created: " + product);
             boolean isUpdated = Model.getInstance().update(product);
-            response.setContentType("application/json;charset=UTF-8");
+            response.setContentType("application/json;charset=windows-1251");
             PrintWriter out = response.getWriter();
             out.print(isUpdated);
             System.out.println("Update.doPost: update successful");
