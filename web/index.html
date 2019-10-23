@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <!--    <meta charset="windows-1251">-->
+        <meta charset="UTF-8">
     <title>TestTask5</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="/styles.css"/>
@@ -18,14 +19,12 @@
 
 <div id="mainTable"></div>
 
-<!--<span id="test">test</span>-->
-
 <button class="open-button" onclick="openForm()">Добавить продукт</button>
 
 <div id="createDIV" class="form-popup">
-    <form id="CreateForm" method="post" action="" class="form-container">
-        <!--accept-charset="utf-8"-->
-        <!--        onsubmit="createOrUpdate();"-->
+    <form id="CreateForm" method="post" action="" enctype="multipart/form-data" accept-charset="windows-1251"
+          class="form-container">
+
         <p id="CreateFormHeader"><b>Добавить продукт</b></p>
 
         <label for="inputID">Идентификатор</label>
@@ -60,6 +59,12 @@
     $(document).ready(function () {
         $("#submitButton").click(
             function () {
+//TODO: валидация
+                if (isNaN(+(document.getElementById("inputPlace_storage").getAttribute("value")))) {
+                    alert("Номер ячейки хранения должен быть положительным числом");
+                    document.getElementById("inputPlace_storage").setAttribute("value", "");
+                }
+
                 var operationUrl = "/create";
 
                 if (document.getElementById("CreateFormHeader").innerText === "Изменить продукт")
@@ -69,6 +74,7 @@
                     url: operationUrl,
                     type: "POST",
                     dataType: "html",
+                    // data: encodeURIComponent($("#CreateForm").serialize()),
                     data: $("#CreateForm").serialize(),
                     success: function (response) {
                         result = $.parseJSON(response);
@@ -86,12 +92,7 @@
         );
     });
 
-</script>
-
-<script>
     var xmlHttp = new XMLHttpRequest();
-
-    //TODO: cross-browser XMLHttpRequest
 
     function refresh() {
         xmlHttp.open("GET", "/refresh", true);
@@ -188,22 +189,15 @@
         document.getElementById("CreateFormHeader").innerText = "Добавить продукт";
     }
 
-    function validateForm() {
-        // // document.getElementById("test").innerText = document.getElementById("inputPlace_storage").getAttribute("value");
-        // if (!isNaN(+document.getElementById("inputPlace_storage").getAttribute("value")))
-        //     return true;
-        // else {
-        //     alert("Номер ячейки хранения должен быть положительным числом");
-        //     // document.getElementById("inputPlace_storage").setAttribute("value", "")
-        //     return false;
-        // }
-
-    }
-
-    // Маска даты
-    // $(function () {
-    //     $('input#inputCreate_date').mask('99-99-9999');
-    // });
+    // function validateForm() {
+    //     if (!isNaN(+document.getElementById("inputPlace_storage").getAttribute("value")))
+    //         return true;
+    //     else {
+    //         alert("Номер ячейки хранения должен быть положительным числом");
+    //         return false;
+    //     }
+    //
+    // }
 
     refresh();
 </script>

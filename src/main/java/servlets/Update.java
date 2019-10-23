@@ -1,6 +1,5 @@
 package servlets;
 
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import entities.Product;
@@ -22,13 +21,25 @@ import java.util.stream.Collectors;
 public class Update extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String values = request.getReader().lines().collect(Collectors.joining());
-        values = values.replaceAll("\\+", " ");
-        System.out.println("Update.doPost values: "+ values);
+        request.setCharacterEncoding("cp1251");
+        String valuesString = request.getReader().lines().collect(Collectors.joining());
 
-        if (!values.contains("&")) {
-            System.out.println("Update.doPost: searching by id");
-            long id = Long.parseLong(values);
+//        String requestEnc = request.getCharacterEncoding();
+//        if (requestEnc == null) requestEnc = "ISO-8859-1";
+//        String clientEnc = request.getParameter("charset");
+//        if (clientEnc == null) clientEnc = "Cp1251";
+//        System.out.println(requestEnc + " - " + clientEnc);
+//
+//        String valuesEncodedString = new String(valuesString.getBytes(requestEnc), clientEnc);
+//        System.out.println("Update.doPost        valuesString: " + valuesString);
+//        System.out.println("Update.doPost valuesEncodedString: " + valuesEncodedString);
+
+        valuesString = valuesString.replaceAll("\\+", " ");
+
+        //Если поступил запрос данных обновляемого объекта
+        if (!valuesString.contains("&")) {
+            System.out.println("Update.doPost: asking from DB by id");
+            long id = Long.parseLong(valuesString);
 
             Product productForUpdate = Model.getInstance().readProductByID(id);
 
@@ -38,24 +49,26 @@ public class Update extends HttpServlet {
             response.setContentType("application/json;charset=windows-1251");
             PrintWriter out = response.getWriter();
             out.print(jsonG);
+
+            //Если поступили обновлённые данные объекта
         } else {
             System.out.println("Update.doPost: constructing product");
             Product product = new Product();
-            product.setId(Long.parseLong(values.substring(values.indexOf("id") + 3, values.indexOf("name") - 1)));
-            product.setName(values.substring(values.indexOf("name") + 5, values.indexOf("description") - 1));
-            product.setDescription(values.substring(values.indexOf("description") + 12, values.indexOf("create_date") - 1));
-            String create_date = values.substring(values.indexOf("create_date") + 12, values.indexOf("place_storage") - 1);
+            product.setId(Long.parseLong(valuesString.substring(valuesString.indexOf("id") + 3, valuesString.indexOf("name") - 1)));
+            product.setName(valuesString.substring(valuesString.indexOf("name") + 5, valuesString.indexOf("description") - 1));
+            product.setDescription(valuesString.substring(valuesString.indexOf("description") + 12, valuesString.indexOf("create_date") - 1));
+            String create_date = valuesString.substring(valuesString.indexOf("create_date") + 12, valuesString.indexOf("place_storage") - 1);
 
             LocalDate localDate = LocalDate.parse(create_date, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
             product.setCreate_date(Date.valueOf(localDate).getTime());
 
             String place_storage;
             boolean reserved;
-            if (values.contains("reserved")) {
-                place_storage = values.substring(values.indexOf("place_storage") + 14, values.indexOf("reserved") - 1);
+            if (valuesString.contains("reserved")) {
+                place_storage = valuesString.substring(valuesString.indexOf("place_storage") + 14, valuesString.indexOf("reserved") - 1);
                 reserved = true;
             } else {
-                place_storage = values.substring(values.indexOf("place_storage") + 14);
+                place_storage = valuesString.substring(valuesString.indexOf("place_storage") + 14);
                 reserved = false;
             }
 
@@ -70,13 +83,4 @@ public class Update extends HttpServlet {
             System.out.println("Update.doPost: update successful");
         }
     }
-
-//    @Override
-//    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws
-//            ServletException, IOException {
-//        System.out.println("doget: " + request.getReader().lines().collect(Collectors.joining()));
-//        for (Map.Entry<String, String[]> e : request.getParameterMap().entrySet())
-//            System.out.println(e.getKey() + " " + e.getValue());
-//
-//    }
 }

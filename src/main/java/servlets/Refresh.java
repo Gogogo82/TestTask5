@@ -22,7 +22,7 @@ public class Refresh extends HttpServlet {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonG = gson.toJson(list);
 
-        response.setContentType("application/json;charset=UTF-8");
+        response.setContentType("application/json;charset=windows-1251");
         PrintWriter out = response.getWriter();
         out.print(jsonG);
         System.out.println("Refresh successful");

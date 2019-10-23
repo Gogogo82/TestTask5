@@ -11,7 +11,6 @@ public class Product implements Serializable {
     private long create_date;
     private long place_storage;
     private boolean reserved;
-//    private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
     public Product() {
     }
@@ -93,7 +92,7 @@ public class Product implements Serializable {
         return id + "\t" + name + "\t" + description + "\t" + getCreate_dateAsString() + "\t" + place_storage + "\t" + reserved;
     }
 
-        @Override
+    @Override
     public boolean equals(Object o) {
         if (o == null) return false;
         if (o == this) return true;
@@ -110,16 +109,17 @@ public class Product implements Serializable {
         if (temp.reserved != reserved) return false;
         return true;
     }
+
     @Override
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
 
-        result = PRIME * result + (int)id;
+        result = PRIME * result + (int) id;
         result = PRIME * result + ((name == null) ? 0 : name.hashCode());
         result = PRIME * result + ((description == null) ? 0 : description.hashCode());
-        result = PRIME * result + (int)create_date;
-        result = PRIME * result + (int)place_storage;
+        result = PRIME * result + (int) create_date;
+        result = PRIME * result + (int) place_storage;
         result = PRIME * result + (reserved ? 0 : 1);
         return result;
     }

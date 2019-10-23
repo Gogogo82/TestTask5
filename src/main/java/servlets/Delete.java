@@ -1,9 +1,7 @@
 package servlets;
 
-
 import model.Model;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +16,7 @@ public class Delete extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String param = request.getReader().lines().collect(Collectors.joining());
         boolean isDeleted = Model.getInstance().delete(Long.parseLong(param));
-        response.setContentType("application/json;charset=UTF-8");
+        response.setContentType("application/json;charset=windows-1251");
         PrintWriter out = response.getWriter();
         out.print(isDeleted);
     }
