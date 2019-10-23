@@ -52,7 +52,6 @@ public class Update extends HttpServlet {
                     Integer.parseInt(create_date.substring(3, 5)) - 1,
                     Integer.parseInt(create_date.substring(0, 2))
             );
-            System.out.println("5");
             product.setCreate_date(calendar.getTimeInMillis());
             System.out.println("Update.doPost: date created");
 
@@ -65,7 +64,6 @@ public class Update extends HttpServlet {
                 place_storage = values.substring(values.indexOf("place_storage") + 14);
                 reserved = false;
             }
-            System.out.println("4");
 
             product.setPlace_storage(Long.parseLong(place_storage));
             product.setReserved(reserved);
