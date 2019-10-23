@@ -2,17 +2,32 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class test {
     public static void main(String[] args) throws IOException, ClassNotFoundException, URISyntaxException {
-        String create_date = "31-12-2019";
+
+        String create_date = "01-10-2019";
+        LocalDate localDate = LocalDate.parse(create_date, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        System.out.println(Date.valueOf(localDate).getTime());
+
         Calendar calendar = new GregorianCalendar(
                 Integer.parseInt(create_date.substring(6)),
-                        Integer.parseInt(create_date.substring(3, 5)) - 1,
-                                Integer.parseInt(create_date.substring(0, 2))
-        ); //22-09-2019
+                Integer.parseInt(create_date.substring(3, 5)) - 1,
+                Integer.parseInt(create_date.substring(0, 2))
+        );
+        System.out.println(calendar.getTimeInMillis());
+
+//        String create_date = "31-12-2019";
+//        Calendar calendar = new GregorianCalendar(
+//                Integer.parseInt(create_date.substring(6)),
+//                        Integer.parseInt(create_date.substring(3, 5)) - 1,
+//                                Integer.parseInt(create_date.substring(0, 2))
+//        ); //22-09-2019
 
 
 
@@ -23,17 +38,17 @@ public class test {
 //        web_location = location.getPath().substring(0, n);
 //        web_location = web_location.replaceAll("%20", " ");
 
-        String projectRoot = test.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        projectRoot = projectRoot.substring(0, projectRoot.lastIndexOf("TestTask5") + "TestTask5".length());
-        projectRoot = projectRoot.replaceAll("%20", " ");
-        projectRoot = projectRoot.replaceAll("/", "\\\\");
-        projectRoot = projectRoot.replaceFirst("\\\\", "");
-        String path = projectRoot + "\\web\\DBparams.txt";
-String pathToParams = "/C:/Users/User/IdeaProjects/TestTask5/out/artifacts/TestTask5_war_exploded/DBparams.txt";
-
-        if (pathToParams.matches("/[a-zA-Z]:.*"))
-        pathToParams = pathToParams.replaceFirst("/", "");
-        System.out.println(pathToParams);
+//        String projectRoot = test.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+//        projectRoot = projectRoot.substring(0, projectRoot.lastIndexOf("TestTask5") + "TestTask5".length());
+//        projectRoot = projectRoot.replaceAll("%20", " ");
+//        projectRoot = projectRoot.replaceAll("/", "\\\\");
+//        projectRoot = projectRoot.replaceFirst("\\\\", "");
+//        String path = projectRoot + "\\web\\DBparams.txt";
+//String pathToParams = "/C:/Users/User/IdeaProjects/TestTask5/out/artifacts/TestTask5_war_exploded/DBparams.txt";
+//
+//        if (pathToParams.matches("/[a-zA-Z]:.*"))
+//        pathToParams = pathToParams.replaceFirst("/", "");
+//        System.out.println(pathToParams);
 
 //        String[] params = Files.lines(Paths.get(path)).toArray(String[]::new);
 //        System.out.println(params[0]);

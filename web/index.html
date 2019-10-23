@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>TestTask5</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
+    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>-->
     <!--    <%&#45;&#45;    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.js"></script>&#45;&#45;%>-->
     <link rel="stylesheet" type="text/css" href="/styles.css"/>
     <link rel="stylesheet" type="text/css" href="/scripts/calendar/tcal.css"/>
@@ -16,6 +16,7 @@
     <h1>Список товаров</h1>
 </div>
 
+<button class="edit-delete-button" onclick="refresh()">Обновить</button>
 
 <div id="mainTable"></div>
 
@@ -24,7 +25,7 @@
 <button class="open-button" onclick="openForm()">Добавить продукт</button>
 
 <div id="createDIV" class="form-popup">
-    <form id="CreateForm" method="post" class="form-container" onsubmit=create()>
+    <form id="CreateForm" method="post" class="form-container" onsubmit=createOrUpdate()>
         <!--accept-charset="utf-8"-->
         <p id="CreateFormHeader"><b>Добавить продукт</b></p>
 
@@ -59,37 +60,22 @@
 
     //TODO: cross-browser XMLHttpRequest
 
-    function create() {
-        if (document.getElementById("CreateFormHeader").innerText == "Изменить продукт")
-            update();
-        else {
-            var params = $("#CreateForm").serialize();
-            $.ajax({
-                type: "POST",
-                url: "/create",
-                data: params,
-                success: function () {
-                    document.getElementById("test").innerText = "ajax";
-                    refresh();
-                    //TODO
-                }
-            });
-        }
-    }
+    function createOrUpdate() {
+        var operationUrl = "/create";
 
-    function update() {
+        if (document.getElementById("CreateFormHeader").innerText === "Изменить продукт")
+            operationUrl = "/update";
+        
         var params = $("#CreateForm").serialize();
         $.ajax({
             type: "POST",
-            dataType: "text",
-            url: "/update",
-            data: params,
-            success: function () {
-                document.getElementById("test").innerText = "ajax";
-                refresh();
-                //TODO
-            }
+            url: operationUrl,
+            data: params
+            // success: function () {
+            // refresh();
+            // }
         });
+
     }
 
     function refresh() {
@@ -102,7 +88,7 @@
                 var isChecked = "";
 
                 for (var x in serverRequest) {
-                    var date = new Date(+(serverRequest[x].create_date));
+
                     if (serverRequest[x].reserved)
                         isChecked = "Да";
 
@@ -110,14 +96,13 @@
                         serverRequest[x].id + "</td><td>" +
                         serverRequest[x].name + "</td><td>" +
                         serverRequest[x].description + "</td><td>" +
-                        date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear() + "</td><td>" +
-                        //TODO: day and month to MM-dd
+                        formatDate(serverRequest[x].create_date) + "</td><td>" +
                         serverRequest[x].place_storage + "</td><td>" +
                         isChecked + "</td><td><button name=" +
                         serverRequest[x].id + " class=\"edit-delete-button\" onclick='return askProductData(this);'>Редактировать</button>&nbsp<button name=" +
                         serverRequest[x].id + " class=\"edit-delete-button\" onclick='return deleteProduct(this);'>Удалить</button></td></tr>";
                 }
-                tableContent += "</table>"
+                tableContent += "</table>";
                 document.getElementById("mainTable").innerHTML = tableContent;
             }
         };
@@ -130,13 +115,11 @@
         xmlHttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 var serverRequest = JSON.parse(this.responseText);
-                var date = new Date(+(serverRequest.create_date));
 
                 document.getElementById("inputID").setAttribute("value", serverRequest.id);
                 document.getElementById("inputName").setAttribute("value", serverRequest.name);
                 document.getElementById("inputDescription").innerText = serverRequest.description;
-                document.getElementById("inputCreate_date").setAttribute("value", date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear());
-                //TODO: date to dd-mm-yyyy
+                document.getElementById("inputCreate_date").setAttribute("value", formatDate(serverRequest.create_date));
                 document.getElementById("inputPlace_storage").setAttribute("value", serverRequest.place_storage);
                 if (serverRequest.reserved)
                     document.getElementById("inputReserved").setAttribute("checked", "");
@@ -147,6 +130,18 @@
         };
     }
 
+    function formatDate(dateMills) {
+        var date = new Date(+(dateMills));
+        var day = "" + date.getDate();
+        if (date.getDate() < 10)
+            day = "0" + date.getDate();
+
+        var month = "" + (date.getMonth() + 1);
+        if ((date.getMonth() + 1) < 10)
+            day = "0" + (date.getMonth() + 1);
+
+        return day + "-" + month + "-" + date.getFullYear();
+    }
 
     function deleteProduct(Element) {
         xmlHttp.open("POST", "/delete", true);
@@ -155,7 +150,7 @@
         xmlHttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 // if ((this.responseText) == "true"
-                refresh();
+                // refresh();
             }
         };
     }

@@ -3,19 +3,19 @@ package servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import entities.Product;
 import model.Model;
-import model.Product;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.*;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
 @WebServlet(name = "update", urlPatterns = {"/update"})
@@ -46,14 +46,8 @@ public class Update extends HttpServlet {
             product.setDescription(values.substring(values.indexOf("description") + 12, values.indexOf("create_date") - 1));
             String create_date = values.substring(values.indexOf("create_date") + 12, values.indexOf("place_storage") - 1);
 
-            System.out.println("Update.doPost: creating date from: " + create_date);
-            Calendar calendar = new GregorianCalendar(
-                    Integer.parseInt(create_date.substring(6)),
-                    Integer.parseInt(create_date.substring(3, 5)) - 1,
-                    Integer.parseInt(create_date.substring(0, 2))
-            );
-            product.setCreate_date(calendar.getTimeInMillis());
-            System.out.println("Update.doPost: date created");
+            LocalDate localDate = LocalDate.parse(create_date, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            product.setCreate_date(Date.valueOf(localDate).getTime());
 
             String place_storage;
             boolean reserved;

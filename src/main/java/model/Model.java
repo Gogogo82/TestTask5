@@ -1,9 +1,6 @@
 package model;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.DriverManager;
@@ -11,10 +8,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import entities.Product;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -57,7 +54,7 @@ public class Model {
             String[] params = Files.lines(Paths.get(pathToParams)).toArray(String[]::new);
             DB_USERNAME = params[0];
             DB_PASSWORD = params[1];
-            DB_URL = "jdbc:hsqldb:" + params[2].replaceFirst(".script", "") + ";ifexists=true;shutdown=true";
+            DB_URL = "jdbc:hsqldb:" + params[2].replaceFirst("\\.script", "") + ";ifexists=true;shutdown=true";
 
             Class.forName("org.hsqldb.jdbc.JDBCDriver");
         } catch (ClassNotFoundException | IOException e) {

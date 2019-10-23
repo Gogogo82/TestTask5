@@ -1,22 +1,19 @@
 package servlets;
 
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import model.Model;
-import model.Product;
+import entities.Product;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
 @WebServlet(name = "create", urlPatterns = {"/create"})
@@ -33,12 +30,8 @@ public class Create extends HttpServlet {
             product.setDescription(values.substring(values.indexOf("description") + 12, values.indexOf("create_date") - 1));
             String create_date = values.substring(values.indexOf("create_date") + 12, values.indexOf("place_storage") - 1);
 
-            Calendar calendar = new GregorianCalendar(
-                    Integer.parseInt(create_date.substring(6)),
-                    Integer.parseInt(create_date.substring(3, 5)) - 1,
-                    Integer.parseInt(create_date.substring(0, 2))
-            );
-            product.setCreate_date(calendar.getTimeInMillis());
+        LocalDate localDate = LocalDate.parse(create_date, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        product.setCreate_date(Date.valueOf(localDate).getTime());
 
             String place_storage;
             boolean reserved;
@@ -53,7 +46,7 @@ public class Create extends HttpServlet {
             product.setPlace_storage(Long.parseLong(place_storage));
             product.setReserved(reserved);
 
-            System.out.println("product to create: " + product);
+            System.out.println("product to createOrUpdate: " + product);
             boolean isUpdated = Model.getInstance().create(product);
             response.setContentType("application/json;charset=UTF-8");
             PrintWriter out = response.getWriter();
