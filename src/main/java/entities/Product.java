@@ -106,8 +106,7 @@ public class Product implements Serializable {
         if (temp.description != null ? !temp.description.equals(description) : description != null) return false;
         if (temp.create_date != create_date) return false;
         if (temp.place_storage != place_storage) return false;
-        if (temp.reserved != reserved) return false;
-        return true;
+        return temp.reserved == reserved;
     }
 
     @Override

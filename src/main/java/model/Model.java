@@ -17,7 +17,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
 public class Model {
-    private static Model instance = new Model();
+    private final static Model instance = new Model();
 
     private static JdbcTemplate jdbcTemplateObj;
     private static SimpleDriverDataSource dataSourceObj;

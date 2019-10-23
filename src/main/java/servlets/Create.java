@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @WebServlet(name = "create", urlPatterns = {"/create"})
 public class Create extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String values = request.getReader().lines().collect(Collectors.joining());
         values = values.replaceAll("\\+", " ");
         System.out.println("Create: doPost values: " + values);

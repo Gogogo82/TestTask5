@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @WebServlet(name = "update", urlPatterns = {"/update"})
 public class Update extends HttpServlet {
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("cp1251");
         String valuesString = request.getReader().lines().collect(Collectors.joining());
 
