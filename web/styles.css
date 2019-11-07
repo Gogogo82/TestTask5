@@ -38,7 +38,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
 
 }
 
-.form-container input[type=text], .form-container textarea[type=text] {
+.form-container input[type=text], .form-container input[type=date], .form-container input[type=number], .form-container textarea[type=text] {
     width: 100%;
     padding: 5px;
     margin: 5px 0 10px 0;
@@ -46,7 +46,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
     background: #f1f1f1;
 }
 
-.form-container input[type=text]:focus, .form-container textarea[type=text]:focus {
+.form-container input[type=text]:focus, .form-container input[type=date]:focus, .form-container input[type=number]:focus, .form-container textarea[type=text]:focus {
     background-color: #ddd;
     outline: none;
 }

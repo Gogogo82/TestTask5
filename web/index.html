@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <!--    <meta charset="windows-1251">-->
-        <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <title>TestTask5</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="/styles.css"/>
@@ -22,27 +22,26 @@
 <button class="open-button" onclick="openForm()">Добавить продукт</button>
 
 <div id="createDIV" class="form-popup">
-    <form id="CreateForm" method="post" action="" enctype="multipart/form-data" accept-charset="windows-1251"
-          class="form-container">
+    <form id="CreateForm" method="post" action="" enctype="text/plain" accept-charset="windows-1251"
+          class="form-container" autocomplete="off">
 
         <p id="CreateFormHeader"><b>Добавить продукт</b></p>
 
         <label for="inputID">Идентификатор</label>
-        <input type="text" id="inputID" name="id" readonly="readonly" autocomplete="off">
+        <input type="text" id="inputID" name="id" readonly="readonly">
         <br>
         <label for="inputName">Название</label>
-        <input type="text" id="inputName" name="name" maxlength="512" autocomplete="off" required>
+        <input type="text" id="inputName" name="name" maxlength="512" required>
         <br>
         <label for="inputDescription">Описание</label>
-        <textarea type="text" id="inputDescription" name="description" maxlength="1024" autocomplete="off"
-                  required></textarea>
+        <textarea type="text" id="inputDescription" name="description" maxlength="1024" required></textarea>
         <br>
         <label for="inputCreate_date">Добавлен в базу</label>
-        <input type="text" id="inputCreate_date" name="create_date" class="tcal" readonly="readonly" autocomplete="off"
-               required>
+        <input type="date" id="inputCreate_date" name="create_date" required>
+        <!--               class="tcal"-->
         <br>
         <label for="inputPlace_storage">Ячейка хранения</label>
-        <input type="text" id="inputPlace_storage" name="place_storage" autocomplete="off" required>
+        <input type="number" id="inputPlace_storage" name="place_storage" required>
         <br>
         <label for="inputReserved">Зарезервирован</label>
         <input type="checkbox" id="inputReserved" name="reserved">
@@ -53,57 +52,101 @@
     </form>
 </div>
 
-<div id="result_form"></div>
+<div id="result_form">result_form</div>
+<div id="test1">test1</div>
+<div id="test2">test2</div>
 
 <script>
     $(document).ready(function () {
-        $("#submitButton").click(
-            function () {
-//TODO: валидация
-                if (isNaN(+(document.getElementById("inputPlace_storage").getAttribute("value")))) {
-                    alert("Номер ячейки хранения должен быть положительным числом");
-                    document.getElementById("inputPlace_storage").setAttribute("value", "");
+        $('#CreateForm').submit(function (e) {
+            e.preventDefault();
+
+            let operationUrl = "/create";
+
+            if (document.getElementById("CreateFormHeader").innerText === "Изменить продукт")
+                operationUrl = "/update";
+
+            let formArray = $('#CreateForm').serializeArray();
+
+            $.ajax({
+                url: operationUrl,
+                type: "POST",
+                dataType: "JSON",
+                // processData: false,
+                // contentType: false,
+                // data: encodeURIComponent($("#CreateForm").serialize()),
+                // data: $("#CreateForm").serialize(),
+                // data: new FormData(document.getElementById("CreateForm")),
+                data: JSON.stringify(formArray),
+                success: function (response) {
+                    result = $.parseJSON(response);
+                    $('#result_form').html('Данные отправлены успешно');
+                    refresh();
+                    closeForm();
+                },
+                error: function (response) {
+                    $('#result_form').html('Ошибка. Данные не отправлены.');
                 }
-
-                var operationUrl = "/create";
-
-                if (document.getElementById("CreateFormHeader").innerText === "Изменить продукт")
-                    operationUrl = "/update";
-
-                $.ajax({
-                    url: operationUrl,
-                    type: "POST",
-                    dataType: "html",
-                    // data: encodeURIComponent($("#CreateForm").serialize()),
-                    data: $("#CreateForm").serialize(),
-                    success: function (response) {
-                        result = $.parseJSON(response);
-                        $('#result_form').html('Данные отправлены успешно');
-                        refresh();
-                        closeForm();
-                    },
-                    error: function (response) {
-                        $('#result_form').html('Ошибка. Данные не отправлены.');
-                    }
-                });
-
-                return false;
-            }
-        );
+            });
+        });
     });
 
-    var xmlHttp = new XMLHttpRequest();
+
+    //     $(document).ready(function () {
+    //         $("#submitButton").click(
+    //             function () {
+    //
+    //                 if (true) {
+    //                     // if (isNaN(+(document.getElementById("inputPlace_storage").getAttribute("value")))) {
+    //                     // alert("Номер ячейки хранения должен быть положительным числом");
+    //                     // document.getElementById("test").innerHTML = (document.getElementById("inputPlace_storage").getAttribute("value"));
+    //                     //inputPlace_storage contains old value
+    //                     document.getElementById("test1").innerHTML = document.getElementById("inputPlace_storage").getAttribute("value");
+    //                     document.getElementById("test2").innerHTML = +(document.getElementById("inputPlace_storage").getAttribute("value"));
+    //                     document.getElementById("inputPlace_storage").setAttribute("value", "");
+    //                     return false;
+    //                 } else {
+    //
+    //                     let operationUrl = "/create";
+    //
+    //                     if (document.getElementById("CreateFormHeader").innerText === "Изменить продукт")
+    //                         operationUrl = "/update";
+    //
+    //                     $.ajax({
+    //                         url: operationUrl,
+    //                         type: "POST",
+    //                         dataType: "html",
+    //                         // data: encodeURIComponent($("#CreateForm").serialize()),
+    //                         data: $("#CreateForm").serialize(),
+    //                         success: function (response) {
+    //                             result = $.parseJSON(response);
+    //                             $('#result_form').html('Данные отправлены успешно');
+    //                             refresh();
+    //                             closeForm();
+    //                         },
+    //                         error: function (response) {
+    //                             $('#result_form').html('Ошибка. Данные не отправлены.');
+    //                         }
+    //                     });
+    //
+    //                     return false;
+    //                 }
+    //             }
+    //         );
+    //     });
+
+    let xmlHttp = new XMLHttpRequest();
 
     function refresh() {
         xmlHttp.open("GET", "/refresh", true);
         xmlHttp.send();
         xmlHttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                var serverRequest = JSON.parse(this.responseText);
-                var tableContent = "<table border=\"1\"><tr><th>Идентификатор</th><th>Название</th><th>Описание</th><th>Добавлен в базу</th><th>Ячейка хранения</th><th>Зарезервирован</th><th>Изменить запись</th></tr>"
-                var isChecked = "";
+                let serverRequest = JSON.parse(this.responseText);
+                let tableContent = "<table border=\"1\"><tr><th>Идентификатор</th><th>Название</th><th>Описание</th><th>Добавлен в базу</th><th>Ячейка хранения</th><th>Зарезервирован</th><th>Изменить запись</th></tr>"
+                let isChecked = "";
 
-                for (var x in serverRequest) {
+                for (let x in serverRequest) {
 
                     if (serverRequest[x].reserved)
                         isChecked = "Да";
@@ -112,7 +155,7 @@
                         serverRequest[x].id + "</td><td>" +
                         serverRequest[x].name + "</td><td>" +
                         serverRequest[x].description + "</td><td>" +
-                        formatDate(serverRequest[x].create_date) + "</td><td>" +
+                        formatDate(serverRequest[x].create_date, "refreshForm") + "</td><td>" +
                         serverRequest[x].place_storage + "</td><td>" +
                         isChecked + "</td><td><button name=" +
                         serverRequest[x].id + " class=\"edit-delete-button\" onclick='return askProductData(this);'>Редактировать</button>&nbsp<button name=" +
@@ -126,16 +169,16 @@
 
     function askProductData(Element) {
         xmlHttp.open("POST", "/update", true);
-        xmlHttp.send(Element.name + "\n");
+        xmlHttp.send("askProductData:" + Element.name + "\n");
 
         xmlHttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                var serverRequest = JSON.parse(this.responseText);
+                let serverRequest = JSON.parse(this.responseText);
 
                 document.getElementById("inputID").setAttribute("value", serverRequest.id);
                 document.getElementById("inputName").setAttribute("value", serverRequest.name);
                 document.getElementById("inputDescription").innerText = serverRequest.description;
-                document.getElementById("inputCreate_date").setAttribute("value", formatDate(serverRequest.create_date));
+                document.getElementById("inputCreate_date").setAttribute("value", formatDate(serverRequest.create_date, "editForm"));
                 document.getElementById("inputPlace_storage").setAttribute("value", serverRequest.place_storage);
                 if (serverRequest.reserved)
                     document.getElementById("inputReserved").setAttribute("checked", "");
@@ -146,18 +189,35 @@
         };
     }
 
-    function formatDate(dateMills) {
-        var date = new Date(+(dateMills));
-        var day = "" + date.getDate();
+    function formatDate(dateMills, target) {
+        let date = new Date(+(dateMills));
+        let day = "" + date.getDate();
         if (date.getDate() < 10)
             day = "0" + date.getDate();
 
-        var month = "" + (date.getMonth() + 1);
+        let month = "" + (date.getMonth() + 1);
         if ((date.getMonth() + 1) < 10)
             day = "0" + (date.getMonth() + 1);
 
-        return day + "-" + month + "-" + date.getFullYear();
+        if (target == "editForm")
+            return date.getFullYear() + "-" + month + "-" + day;
+        else if (target == "refreshForm")
+            return day + "." + month + "." + date.getFullYear();
     }
+
+    function formatDateForForm(dateMills) {
+        let date = new Date(+(dateMills));
+        let day = "" + date.getDate();
+        if (date.getDate() < 10)
+            day = "0" + date.getDate();
+
+        let month = "" + (date.getMonth() + 1);
+        if ((date.getMonth() + 1) < 10)
+            day = "0" + (date.getMonth() + 1);
+
+        return date.getFullYear() + "." + month + "." + day;
+    }
+
 
     function deleteProduct(Element) {
         xmlHttp.open("POST", "/delete", true);
@@ -189,17 +249,54 @@
         document.getElementById("CreateFormHeader").innerText = "Добавить продукт";
     }
 
-    // function validateForm() {
-    //     if (!isNaN(+document.getElementById("inputPlace_storage").getAttribute("value")))
-    //         return true;
-    //     else {
-    //         alert("Номер ячейки хранения должен быть положительным числом");
-    //         return false;
-    //     }
-    //
-    // }
+    function validateForm(input) {
+        if (isNaN(+(document.getElementById("inputPlace_storage").getAttribute("value"))))
+            input.setCustomValidity("Номер ячейки хранения должен быть положительным числом");
+        // return false;
+        else {
+            input.setCustomValidity("");
+
+            // alert("Номер ячейки хранения должен быть положительным числом");
+            // return true;
+        }
+        document.getElementById("test1").innerHTML = document.getElementById("inputPlace_storage").getAttribute("value");
+        document.getElementById("test2").innerHTML = +(document.getElementById("inputPlace_storage").getAttribute("value"));
+        alert("Form validated");
+
+        return false;
+    }
 
     refresh();
 </script>
 </body>
 </html>
+
+
+<!--    <script>-->
+<!--        // зарегистрировать событие onclick-->
+<!--        window.addEventListener('load', registerEvents, false);-->
+<!--        // создать глобальную переменную для счетчика-->
+<!--        let theCount = 0;-->
+
+<!--        // Регистрирует событие onclick-->
+<!--        // 1 ар-->
+<!--        function registerEvents(e) {-->
+<!--            document.getElementByld("incrementButton").addEventListener('click', increaseCount, false);-->
+<!--            document.getElementByld("incrementButton").addEventListener('click', changeSize, false);-->
+<!--        }-->
+
+<!--        //    Инкрементирует theCount и отображает результат-->
+
+<!--        function increaseCount(e) {-->
+<!--            theCount++;-->
+<!--            document.getElementByld("currentCount").innerHTML = theCount;-->
+<!--        }-->
+
+<!--        //Изменяет размер шрифта для вывода значения счетчика-->
+<!--        function changeSize(е) {-->
+<!--            document.getElementByld("currentCount").style.fontSize = theCount;-->
+<!--    </script>-->
+
+
+<!--<p>Текущее значение: <span id="currentCount">0</span></p>-->
+<!--<button id="incrementButton">Инкрементировать c4eT4HK</button>-->

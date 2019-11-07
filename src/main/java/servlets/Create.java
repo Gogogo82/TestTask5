@@ -3,7 +3,6 @@ package servlets;
 import model.Model;
 import entities.Product;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +26,7 @@ public class Create extends HttpServlet {
         product.setDescription(values.substring(values.indexOf("description") + 12, values.indexOf("create_date") - 1));
         String create_date = values.substring(values.indexOf("create_date") + 12, values.indexOf("place_storage") - 1);
 
-        LocalDate localDate = LocalDate.parse(create_date, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        LocalDate localDate = LocalDate.parse(create_date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         product.setCreate_date(Date.valueOf(localDate).getTime());
 
         String place_storage;
