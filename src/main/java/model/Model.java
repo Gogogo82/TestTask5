@@ -43,11 +43,13 @@ public class Model {
 
         dataSourceObj = new SimpleDriverDataSource();
 
+        //loading database settings from file
         try {
             String projectRoot = Model.class.getProtectionDomain().getCodeSource().getLocation().getPath();
             projectRoot = projectRoot.substring(0, projectRoot.lastIndexOf("TestTask5_war_exploded") + "TestTask5_war_exploded".length() + 1);
             projectRoot = projectRoot.replaceAll("%20", " ");
             String pathToParams = projectRoot + "DBparams.txt";
+
             if (pathToParams.matches("/[a-zA-Z]:.*"))
                 pathToParams = pathToParams.replaceFirst("/", "");
 
@@ -58,6 +60,7 @@ public class Model {
 
             Class.forName("org.hsqldb.jdbc.JDBCDriver");
         } catch (ClassNotFoundException | IOException e) {
+            System.out.println("Model.getDatabaseConnection failed");
             e.printStackTrace();
         }
 
@@ -76,7 +79,7 @@ public class Model {
             String sqlInsertQuery = "INSERT INTO products (name, description, create_date, place_storage, reserved) VALUES (?, ?, ?, ?, ?)";
             jdbcTemplateObj.update(sqlInsertQuery, product.getName(), product.getDescription(), product.getCreate_dateAsString(), product.getPlace_storage(), product.isReserved());
         } catch (Exception e) {
-            System.err.println("Creation failed");
+            System.out.println("Model.create failed");
             e.printStackTrace();
             result = false;
         }
@@ -109,7 +112,7 @@ public class Model {
             });
 
         } catch (Exception e) {
-            System.err.println("Read failed");
+            System.out.println("Model.read failed");
             e.printStackTrace();
         }
         return result;
@@ -143,7 +146,7 @@ public class Model {
             result = list.get(0);
 
         } catch (Exception e) {
-            System.err.println("User read failed");
+            System.out.println("Model.User read failed");
             e.printStackTrace();
         }
         return result;
@@ -156,7 +159,7 @@ public class Model {
             String sqlUpdateQuery = "UPDATE products set name=?, description=?, create_date=?, place_storage=?, reserved=? WHERE id=?";
             jdbcTemplateObj.update(sqlUpdateQuery, product.getName(), product.getDescription(), product.getCreate_dateAsString(), product.getPlace_storage(), product.isReserved(), product.getId());
         } catch (Exception e) {
-            System.err.println("update failed");
+            System.out.println("Model.update failed");
             e.printStackTrace();
             result = false;
         }
@@ -170,7 +173,7 @@ public class Model {
             String sqlDeleteQuery = "DELETE FROM products where id=?";
             jdbcTemplateObj.update(sqlDeleteQuery, id);
         } catch (Exception e) {
-            System.err.println("update failed");
+            System.out.println("Model.delete failed");
             e.printStackTrace();
             result = false;
         }

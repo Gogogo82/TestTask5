@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!--    <meta charset="windows-1251">-->
     <meta charset="UTF-8">
     <title>TestTask5</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="/styles.css"/>
-    <link rel="stylesheet" type="text/css" href="/scripts/calendar/tcal.css"/>
-    <script src="scripts/calendar/tcal.js"></script>
 </head>
 
 <body>
@@ -38,7 +35,6 @@
         <br>
         <label for="inputCreate_date">Добавлен в базу</label>
         <input type="date" id="inputCreate_date" name="create_date" required>
-        <!--               class="tcal"-->
         <br>
         <label for="inputPlace_storage">Ячейка хранения</label>
         <input type="number" id="inputPlace_storage" name="place_storage" required>
@@ -52,11 +48,10 @@
     </form>
 </div>
 
-<div id="result_form">result_form</div>
-<div id="test1">test1</div>
-<div id="test2">test2</div>
+<div id="result_form"></div>
 
 <script>
+    //AJAX with jquery
     $(document).ready(function () {
         $('#CreateForm').submit(function (e) {
             e.preventDefault();
@@ -72,11 +67,6 @@
                 url: operationUrl,
                 type: "POST",
                 dataType: "JSON",
-                // processData: false,
-                // contentType: false,
-                // data: encodeURIComponent($("#CreateForm").serialize()),
-                // data: $("#CreateForm").serialize(),
-                // data: new FormData(document.getElementById("CreateForm")),
                 data: JSON.stringify(formArray),
                 success: function (response) {
                     result = $.parseJSON(response);
@@ -91,50 +81,7 @@
         });
     });
 
-
-    //     $(document).ready(function () {
-    //         $("#submitButton").click(
-    //             function () {
-    //
-    //                 if (true) {
-    //                     // if (isNaN(+(document.getElementById("inputPlace_storage").getAttribute("value")))) {
-    //                     // alert("Номер ячейки хранения должен быть положительным числом");
-    //                     // document.getElementById("test").innerHTML = (document.getElementById("inputPlace_storage").getAttribute("value"));
-    //                     //inputPlace_storage contains old value
-    //                     document.getElementById("test1").innerHTML = document.getElementById("inputPlace_storage").getAttribute("value");
-    //                     document.getElementById("test2").innerHTML = +(document.getElementById("inputPlace_storage").getAttribute("value"));
-    //                     document.getElementById("inputPlace_storage").setAttribute("value", "");
-    //                     return false;
-    //                 } else {
-    //
-    //                     let operationUrl = "/create";
-    //
-    //                     if (document.getElementById("CreateFormHeader").innerText === "Изменить продукт")
-    //                         operationUrl = "/update";
-    //
-    //                     $.ajax({
-    //                         url: operationUrl,
-    //                         type: "POST",
-    //                         dataType: "html",
-    //                         // data: encodeURIComponent($("#CreateForm").serialize()),
-    //                         data: $("#CreateForm").serialize(),
-    //                         success: function (response) {
-    //                             result = $.parseJSON(response);
-    //                             $('#result_form').html('Данные отправлены успешно');
-    //                             refresh();
-    //                             closeForm();
-    //                         },
-    //                         error: function (response) {
-    //                             $('#result_form').html('Ошибка. Данные не отправлены.');
-    //                         }
-    //                     });
-    //
-    //                     return false;
-    //                 }
-    //             }
-    //         );
-    //     });
-
+    //AJAX without jquery
     let xmlHttp = new XMLHttpRequest();
 
     function refresh() {
@@ -150,6 +97,8 @@
 
                     if (serverRequest[x].reserved)
                         isChecked = "Да";
+                    else
+                        isChecked = "";
 
                     tableContent += "<tr><td>" +
                         serverRequest[x].id + "</td><td>" +
@@ -167,6 +116,7 @@
         };
     }
 
+    //filling EDIT form with editted object`s data
     function askProductData(Element) {
         xmlHttp.open("POST", "/update", true);
         xmlHttp.send("askProductData:" + Element.name + "\n");
@@ -181,7 +131,9 @@
                 document.getElementById("inputCreate_date").setAttribute("value", formatDate(serverRequest.create_date, "editForm"));
                 document.getElementById("inputPlace_storage").setAttribute("value", serverRequest.place_storage);
                 if (serverRequest.reserved)
-                    document.getElementById("inputReserved").setAttribute("checked", "");
+                    $('#inputReserved').prop('checked', true);
+                else
+                    $('#inputReserved').prop('checked', false);
 
                 document.getElementById("CreateFormHeader").innerText = "Изменить продукт";
                 openForm();
@@ -197,27 +149,14 @@
 
         let month = "" + (date.getMonth() + 1);
         if ((date.getMonth() + 1) < 10)
-            day = "0" + (date.getMonth() + 1);
+            month = "0" + (date.getMonth() + 1);
 
+        //different formats for EDIT window and table content
         if (target == "editForm")
             return date.getFullYear() + "-" + month + "-" + day;
         else if (target == "refreshForm")
             return day + "." + month + "." + date.getFullYear();
     }
-
-    function formatDateForForm(dateMills) {
-        let date = new Date(+(dateMills));
-        let day = "" + date.getDate();
-        if (date.getDate() < 10)
-            day = "0" + date.getDate();
-
-        let month = "" + (date.getMonth() + 1);
-        if ((date.getMonth() + 1) < 10)
-            day = "0" + (date.getMonth() + 1);
-
-        return date.getFullYear() + "." + month + "." + day;
-    }
-
 
     function deleteProduct(Element) {
         xmlHttp.open("POST", "/delete", true);
@@ -225,13 +164,16 @@
 
         xmlHttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                // if ((this.responseText) == "true"
+                if ((this.responseText) == "true")
+                    $('#result_form').html('Товар удалён.')
+                else
+                    $('#result_form').html('Ошибка. Товар не удалён.')
                 refresh();
             }
         };
     }
 
-    //Управление формой товара
+    //EDIT window management
     function openForm() {
         document.getElementById("createDIV").style.display = "block";
     }
@@ -249,54 +191,7 @@
         document.getElementById("CreateFormHeader").innerText = "Добавить продукт";
     }
 
-    function validateForm(input) {
-        if (isNaN(+(document.getElementById("inputPlace_storage").getAttribute("value"))))
-            input.setCustomValidity("Номер ячейки хранения должен быть положительным числом");
-        // return false;
-        else {
-            input.setCustomValidity("");
-
-            // alert("Номер ячейки хранения должен быть положительным числом");
-            // return true;
-        }
-        document.getElementById("test1").innerHTML = document.getElementById("inputPlace_storage").getAttribute("value");
-        document.getElementById("test2").innerHTML = +(document.getElementById("inputPlace_storage").getAttribute("value"));
-        alert("Form validated");
-
-        return false;
-    }
-
     refresh();
 </script>
 </body>
 </html>
-
-
-<!--    <script>-->
-<!--        // зарегистрировать событие onclick-->
-<!--        window.addEventListener('load', registerEvents, false);-->
-<!--        // создать глобальную переменную для счетчика-->
-<!--        let theCount = 0;-->
-
-<!--        // Регистрирует событие onclick-->
-<!--        // 1 ар-->
-<!--        function registerEvents(e) {-->
-<!--            document.getElementByld("incrementButton").addEventListener('click', increaseCount, false);-->
-<!--            document.getElementByld("incrementButton").addEventListener('click', changeSize, false);-->
-<!--        }-->
-
-<!--        //    Инкрементирует theCount и отображает результат-->
-
-<!--        function increaseCount(e) {-->
-<!--            theCount++;-->
-<!--            document.getElementByld("currentCount").innerHTML = theCount;-->
-<!--        }-->
-
-<!--        //Изменяет размер шрифта для вывода значения счетчика-->
-<!--        function changeSize(е) {-->
-<!--            document.getElementByld("currentCount").style.fontSize = theCount;-->
-<!--    </script>-->
-
-
-<!--<p>Текущее значение: <span id="currentCount">0</span></p>-->
-<!--<button id="incrementButton">Инкрементировать c4eT4HK</button>-->

@@ -2,6 +2,7 @@ package servlets;
 
 import model.Model;
 import entities.Product;
+import util.ProductCreator;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -9,40 +10,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
 @WebServlet(name = "create", urlPatterns = {"/create"})
 public class Create extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String values = request.getReader().lines().collect(Collectors.joining());
-        values = values.replaceAll("\\+", " ");
-        System.out.println("Create: doPost values: " + values);
-//TODO: объединить методы, создающие Product
-        Product product = new Product();
-        product.setName(values.substring(values.indexOf("name") + 5, values.indexOf("description") - 1));
-        product.setDescription(values.substring(values.indexOf("description") + 12, values.indexOf("create_date") - 1));
-        String create_date = values.substring(values.indexOf("create_date") + 12, values.indexOf("place_storage") - 1);
+        String valuesString = request.getReader().lines().collect(Collectors.joining());
 
-        LocalDate localDate = LocalDate.parse(create_date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        product.setCreate_date(Date.valueOf(localDate).getTime());
+        System.out.println("Create.doPost values: " + valuesString);
 
-        String place_storage;
-        boolean reserved;
-        if (values.contains("reserved")) {
-            place_storage = values.substring(values.indexOf("place_storage") + 14, values.indexOf("reserved") - 1);
-            reserved = true;
-        } else {
-            place_storage = values.substring(values.indexOf("place_storage") + 14);
-            reserved = false;
-        }
-
-        product.setPlace_storage(Long.parseLong(place_storage));
-        product.setReserved(reserved);
-
-        System.out.println("product to createOrUpdate: " + product);
+        Product product = ProductCreator.createProductFromJSON(valuesString);
 
         boolean isUpdated = Model.getInstance().create(product);
 

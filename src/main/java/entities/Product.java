@@ -1,17 +1,21 @@
 package entities;
 
 import java.io.Serializable;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
 public class Product implements Serializable {
     private long id;
     private String name;
     private String description;
+
+    //long because of JS compatibility
     private long create_date;
     private long place_storage;
     private boolean reserved;
 
+    //for serialization purposes
     public Product() {
     }
 
@@ -53,18 +57,9 @@ public class Product implements Serializable {
     }
 
     public String getCreate_dateAsString() {
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTimeInMillis(create_date);
-
-        String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
-        if (day.length() == 1)
-            day = "0" + day;
-
-        String month = String.valueOf(calendar.get(Calendar.MONTH) + 1);
-        if (month.length() == 1)
-            month = "0" + month;
-
-        return calendar.get(Calendar.YEAR) + "-" + month + "-" + day;
+        Date date = new Date(create_date);
+        LocalDate localDate = LocalDate.ofInstant(date.toInstant(), ZoneId.systemDefault());
+        return localDate.toString();
     }
 
     public void setCreate_date(long create_date) {
