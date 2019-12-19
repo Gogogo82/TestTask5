@@ -1,5 +1,6 @@
 package model;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -9,6 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 
 import entities.Product;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,7 +23,6 @@ public class Model {
     private final static Model instance = new Model();
 
     private static JdbcTemplate jdbcTemplateObj;
-    //TODO: replace with DataSource factory for multiple users or bases
     private static DataSource dataSource = setupDataSource();
     private final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
@@ -35,28 +36,38 @@ public class Model {
     private static DataSource setupDataSource() {
         BasicDataSource ds = new BasicDataSource();
         try {
+                Properties properties = new Properties();
+                properties.load(Model.class.getClassLoader().getResourceAsStream("SqlConnection.properties"));
+
             Class.forName("org.hsqldb.jdbc.JDBCDriver");
-
-            //loading database settings from file
-            String projectRoot = Model.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-            projectRoot = projectRoot.substring(0, projectRoot.lastIndexOf("TestTask5_war_exploded") + "TestTask5_war_exploded".length() + 1);
-            projectRoot = projectRoot.replaceAll("%20", " ");
-            String pathToParams = projectRoot + "DBparams.txt";
-
-            if (pathToParams.matches("/[a-zA-Z]:.*"))
-                pathToParams = pathToParams.replaceFirst("/", "");
-
-            String[] params = Files.lines(Paths.get(pathToParams)).toArray(String[]::new);
-
             ds.setDriverClassName("org.hsqldb.jdbc.JDBCDriver");
-            ds.setUrl("jdbc:hsqldb:" + params[2].replaceFirst("\\.script", "") + ";ifexists=true;shutdown=true");
-            ds.setUsername(params[0]);
-            ds.setPassword(params[1]);
+            ds.setUrl("jdbc:hsqldb:" +
+                    properties.getProperty("pathToDbFile").replaceFirst("\\.script", "") +
+                    ";ifexists=true;shutdown=true");
+            ds.setUsername(properties.getProperty("userName"));
+            ds.setPassword(properties.getProperty("password"));
 
-        } catch (ClassNotFoundException | IOException e) {
+//            //loading database settings from file
+//            String projectRoot = Model.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+//            projectRoot = projectRoot.substring(0, projectRoot.lastIndexOf("TestTask5_war_exploded") + "TestTask5_war_exploded".length() + 1);
+//            projectRoot = projectRoot.replaceAll("%20", " ");
+//            String pathToParams = projectRoot + "DBparams.txt";
+//
+//            if (pathToParams.matches("/[a-zA-Z]:.*"))
+//                pathToParams = pathToParams.replaceFirst("/", "");
+//
+//            String[] params = Files.lines(Paths.get(pathToParams)).toArray(String[]::new);
+//
+//            ds.setDriverClassName("org.hsqldb.jdbc.JDBCDriver");
+//            ds.setUrl("jdbc:hsqldb:" + params[2].replaceFirst("\\.script", "") + ";ifexists=true;shutdown=true");
+//            ds.setUsername(params[0]);
+//            ds.setPassword(params[1]);
+
+            System.out.println("setupDataSource completed");
+        } catch (Exception e) {
+            System.out.println("setupDataSource failed");
             e.printStackTrace();
         }
-        System.out.println("setupDataSource completed");
         return ds;
     }
 

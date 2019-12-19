@@ -3,4 +3,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
+
+    <!-- unregistering JDBC drivers-->
+    <listener>
+     <listener-class>util.JdbcDriverUnregisteringListener</listener-class>
+    </listener>
 </web-app>

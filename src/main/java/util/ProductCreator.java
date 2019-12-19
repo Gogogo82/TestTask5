@@ -9,17 +9,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class ProductCreator {
+
     public static Product createProductFromJSON(String valuesString) {
         Product result;
-        //normalizing JSON format
-        valuesString = valuesString.replaceFirst("\\[", "");
-        valuesString = valuesString.replaceAll("\"name\":", "");
-        valuesString = valuesString.replaceAll("\"value\":", "");
-        StringBuilder stringBuilder = new StringBuilder(valuesString);
-        stringBuilder.replace(valuesString.lastIndexOf("]"), valuesString.lastIndexOf("]") + 1, "");
-        valuesString = stringBuilder.toString().replaceAll("\",\"", "\":\"");
-        valuesString = valuesString.replaceAll("},\\{", ",");
-        System.out.println("ProductCreator.valuesString JSONed: " + valuesString);
 
         //GSON deserializer
         class ProductDeserializer implements JsonDeserializer<Product> {

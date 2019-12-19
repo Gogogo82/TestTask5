@@ -61,15 +61,26 @@
             if (document.getElementById("CreateFormHeader").innerText === "Изменить продукт")
                 operationUrl = "/update";
 
-            let formArray = $('#CreateForm').serializeArray();
+            // convert form data to JS Object
+            function objectifyForm() {
+
+                let resultArray = {};
+                let formArray = $('#CreateForm').serializeArray();
+
+                for (let i = 0; i < formArray.length; i++){
+                    resultArray[formArray[i]['name']] = formArray[i]['value'];
+                }
+                return resultArray;
+            }
 
             $.ajax({
                 url: operationUrl,
-                type: "POST",
-                dataType: "JSON",
-                data: JSON.stringify(formArray),
+                type: 'POST',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8;",
+                data: JSON.stringify(objectifyForm()),
                 success: function (response) {
-                    result = $.parseJSON(response);
+                    let result = $.parseJSON(response);
                     $('#result_form').html('Данные отправлены успешно');
                     refresh();
                     closeForm();
